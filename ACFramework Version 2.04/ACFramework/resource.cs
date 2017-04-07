@@ -27,25 +27,26 @@ namespace ACFramework
         // then place the bitmap name in the Bitmap array
         private static readonly int SolidColor = 0;
         public static readonly int Door = 1;
-        public static readonly int Wall2 = 2;
-        public static readonly int Wall3 = 3;
-        public static readonly int Graphics1 = 4;
-        public static readonly int Graphics3 = 5;
-        public static readonly int Sky = 6;
-        public static readonly int Wood2 = 7;
-        public static readonly int Concrete = 8;
+        public static readonly int snowWall = 2;
+        public static readonly int stoneWall = 3;
+        public static readonly int waterFloor = 4;
+        public static readonly int grassFloor = 5;
+        public static readonly int cloudySky = 6;
+        public static readonly int iceFloor = 7;
+        public static readonly int pebbles = 8;
         
 
         private static readonly string[] Bitmap = new string[] {
+
                 "dummy", // nonexistent, used as placeholder -- JC
                 "door.bmp",
-                "wall2.bmp",
-                "wall3.bmp",
-                "graphics1.bmp",
-                "graphics3.bmp",
-                "sky.bmp",
-                "wood2.bmp",
-                "concrete1.bmp"
+                "snow_wallE.bmp",
+                "stone wall.bmp",
+                "water2.bmp",
+                "grass_floorE.bmp",
+                "grayCloudySky.bmp",
+                "ice_floorE.bmp",
+                "pebbles.bmp"
             };
 
         public BitmapRes()
