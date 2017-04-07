@@ -346,12 +346,12 @@ namespace ACFramework
 		I am flying into the screen from HIZ towards LOZ, and
 		LOX below and HIX above and
 		LOY on the right and HIY on the left. */ 
-			SkyBox.setSideSolidColor( cRealBox3.HIZ, Color.Aqua ); //Make the near HIZ transparent 
-			SkyBox.setSideSolidColor( cRealBox3.LOZ, Color.Aqua ); //Far wall 
-			SkyBox.setSideSolidColor( cRealBox3.LOX, Color.DarkOrchid ); //left wall 
-            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.Wall2, 2 ); //right wall 
-			SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Graphics3 ); //floor 
-			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.Sky ); //ceiling 
+			SkyBox.setSideTexture( cRealBox3.HIZ, BitmapRes.snowWall); //Make the near HIZ transparent 
+			SkyBox.setSideTexture( cRealBox3.LOZ, BitmapRes.snowWall ); //Far wall 
+			SkyBox.setSideTexture( cRealBox3.LOX, BitmapRes.snowWall ); //left wall 
+            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.snowWall, 2 ); //right wall 
+			SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.iceFloor ); //floor 
+			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.cloudySky ); //ceiling 
 		
 			WrapFlag = cCritter.BOUNCE; 
 			_seedcount = 7; 
@@ -375,7 +375,7 @@ namespace ACFramework
 				wallthickness, //height argument for this wall's dz  goes into the screen 
 				this );
 			cSpriteTextureBox pspritebox = 
-				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.Wall3, 16 ); //Sets all sides 
+				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.stoneWall, 16 ); //Sets all sides 
 				/* We'll tile our sprites three times along the long sides, and on the
 			short ends, we'll only tile them once, so we reset these two. */
           pwall.Sprite = pspritebox; 
@@ -391,7 +391,7 @@ namespace ACFramework
 				wallthickness, //_border.zradius(),  //height argument for wall's dz which goes into the screen 
 				this );
             cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, 
-                BitmapRes.Wood2, 2 );
+                BitmapRes.iceFloor, 2 );
             pwall.Sprite = stb;
 		
 			cCritterDoor pdwall = new cCritterDoor( 
@@ -411,9 +411,9 @@ namespace ACFramework
 	        cRealBox3 skeleton = new cRealBox3();
             skeleton.copy( _border );
 	        setSkyBox(skeleton);
-	        SkyBox.setAllSidesTexture( BitmapRes.Graphics1, 2 );
-	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Concrete );
-	        SkyBox.setSideSolidColor( cRealBox3.HIY, Color.Blue );
+	        SkyBox.setAllSidesTexture( BitmapRes.snowWall, 2 );
+	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.snowWall );
+	        SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.cloudySky  );
 	        _seedcount = 0;
 	        Player.setMoveBox( new cRealBox3( 10.0f, 15.0f, 10.0f ) );
             float zpos = 0.0f; /* Point on the z axis where we set down the wall.  0 would be center,
@@ -429,7 +429,7 @@ namespace ACFramework
                 wallthickness, //height argument for this wall's dz  goes into the screen 
                 this);
             cSpriteTextureBox pspritebox =
-                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.Wall3, 16); //Sets all sides 
+                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.stoneWall, 16); //Sets all sides 
             /* We'll tile our sprites three times along the long sides, and on the
         short ends, we'll only tile them once, so we reset these two. */
             pwall.Sprite = pspritebox;
