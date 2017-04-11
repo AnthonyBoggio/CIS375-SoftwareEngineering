@@ -327,19 +327,37 @@ namespace ACFramework
         // add more models here that you need in numerical order
         // then add to the array below in the same order
 
-        public static readonly int Squidge = 0;
-        public static readonly int Robot = 1;
-        public static readonly int Link = 2;
-        public static readonly int Knight = 3;
-        public static readonly int CitrusFrog = 4;
+        public static readonly int chicken = 0;
+        public static readonly int hand = 1;
+        public static readonly int jack = 2;
+        public static readonly int mog = 3;
+        public static readonly int mrfrost = 4;
+        public static readonly int oluvegold = 5;
+        public static readonly int oluvegreen = 6;
+        public static readonly int oluvegray = 7;
+        public static readonly int oluvered = 8;
+        public static readonly int oluvesilver = 9;
+        public static readonly int oluvewhite = 10;
+        public static readonly int penguin = 11;
+        public static readonly int potator = 12;
 
         // at least one must be set true
+        /*Folder, file, offset, random select*/
         private static readonly ModelsMD2Info[] minfo = {
-            new ModelsMD2Info( "Squidge", "squidge.pcx", 0.0f, true ),
-            new ModelsMD2Info( "robot", "robot.pcx", 0.2f, true ),
-            new ModelsMD2Info( "link", "soft_link.pcx", 0.1f, true ),
-            new ModelsMD2Info( "pknight", "ctf_b.pcx", 0.15f, true ),
-            new ModelsMD2Info( "citrusfrog", "BigRed.pcx", 0.3f, true )
+            new ModelsMD2Info( "chicken", "Stoopid.pcx", 0.0f, true ),
+            new ModelsMD2Info( "hand", "BASE.pcx", 0.2f, true ),
+            new ModelsMD2Info( "jack", "desert.pcx", 0.1f, true ),
+            new ModelsMD2Info( "mog", "mog.pcx", 0.15f, true ),
+            new ModelsMD2Info( "mrfrost", "mrfrost.pcx", 0.3f, true ),
+            new ModelsMD2Info( "oluve", "gold beast.pcx", 0.2f, true ),
+            new ModelsMD2Info( "oluve", "green grin.pcx", 0.2f, true ),
+            new ModelsMD2Info( "oluve", "gray skull.pcx", 0.2f, true ),
+            new ModelsMD2Info( "oluve", "red amber.pcx", 0.2f, true ),
+            new ModelsMD2Info( "oluve", "silver cloud.pcx", 0.2f, true ),
+            new ModelsMD2Info( "oluve", "white crystal.pcx", 0.2f, true ),
+            new ModelsMD2Info( "penguin", "Penguin.pcx", 0.1f, true ),
+            new ModelsMD2Info( "potator", "ctf_b.pcx", 0.15f, true )
+
         };            
 
         private static int[] randomCritters;

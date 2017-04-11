@@ -180,10 +180,23 @@ namespace ACFramework
 			MaxSpeed = 30.0f;
             if (pownergame != null) //Just to be safe.
                 Sprite = new cSpriteQuake(Framework.models.selectRandomCritter());
-            
+
             // example of setting a specific model
             // setSprite(new cSpriteQuake(ModelsMD2.Knight));
-            
+            Sprite = new cSpriteQuake(ModelsMD2.chicken); //////////////////////////
+            Sprite = new cSpriteQuake(ModelsMD2.hand);
+            Sprite = new cSpriteQuake(ModelsMD2.jack);
+            Sprite = new cSpriteQuake(ModelsMD2.mog);
+            Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
+            Sprite = new cSpriteQuake(ModelsMD2.oluvegold);
+            Sprite = new cSpriteQuake(ModelsMD2.oluvegray);
+            Sprite = new cSpriteQuake(ModelsMD2.oluvegreen);
+            Sprite = new cSpriteQuake(ModelsMD2.oluvered);
+            Sprite = new cSpriteQuake(ModelsMD2.oluvesilver);
+            Sprite = new cSpriteQuake(ModelsMD2.oluvewhite);
+            Sprite = new cSpriteQuake(ModelsMD2.penguin);
+            Sprite = new cSpriteQuake(ModelsMD2.potator);
+
             if ( Sprite.IsKindOf( "cSpriteQuake" )) //Don't let the figurines tumble.  
 			{ 
 				AttitudeToMotionLock = false;   
