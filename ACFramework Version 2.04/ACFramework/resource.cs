@@ -29,11 +29,14 @@ namespace ACFramework
         public static readonly int Door = 1;
         public static readonly int snowWall = 2;
         public static readonly int stoneWall = 3;
-        public static readonly int waterFloor = 4;
+        public static readonly int bounceWall = 4;
         public static readonly int grassFloor = 5;
         public static readonly int cloudySky = 6;
         public static readonly int iceFloor = 7;
-        public static readonly int pebbles = 8;
+        public static readonly int bounceCeiling = 8;
+        public static readonly int fireWall = 9;
+        public static readonly int metalFloor = 10;
+        public static readonly int blackCeiling = 11;
         
 
         private static readonly string[] Bitmap = new string[] {
@@ -42,11 +45,14 @@ namespace ACFramework
                 "door.bmp",
                 "snow_wallE.bmp",
                 "stone wall.bmp",
-                "water2.bmp",
+                "bounceWall.bmp",
                 "grass_floorE.bmp",
-                "grayCloudySky.bmp",
+                "sky2.bmp",
                 "ice_floorE.bmp",
-                "pebbles.bmp"
+                "bounceBallWall.bmp",
+                "firewall.bmp",
+                "metal1.bmp",
+                "blackCeiling.bmp"
             };
 
         public BitmapRes()
