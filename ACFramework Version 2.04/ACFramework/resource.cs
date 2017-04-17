@@ -34,9 +34,9 @@ namespace ACFramework
         public static readonly int cloudySky = 6;
         public static readonly int iceFloor = 7;
         public static readonly int bounceCeiling = 8;
-        public static readonly int fireWall = 9;
-        public static readonly int metalFloor = 10;
-        public static readonly int blackCeiling = 11;
+        public static readonly int fireWall = 9; //handgun room
+        public static readonly int metalFloor = 10; //handgun room
+        public static readonly int blackCeiling = 11; //handgun room
         
 
         private static readonly string[] Bitmap = new string[] {

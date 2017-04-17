@@ -49,7 +49,7 @@ namespace ACFramework
         public cCritter3DPlayer( cGame pownergame ) 
             : base( pownergame ) 
 		{ 
-			BulletClass = new cCritter3DPlayerBullet( ); 
+			BulletClass = new cHandgunBullet( ); 
             Sprite = new cSpriteSphere(); 
 			Sprite.FillColor = Color.DarkGreen; 
 			Sprite.SpriteAttitude = cMatrix3.scale( 2, 0.8f, 0.4f ); 
@@ -201,7 +201,7 @@ namespace ACFramework
 			randomizeVelocity( 0.0f, 30.0f, false ); 
 
                         
-			if ( pownergame != null ) //Then we know we added this to a game so pplayer() is valid 
+			if ( pownergame != null ) //Then we know we added this to a game so player() is valid 
 				addForce( new cForceObjectSeek( Player, 0.5f ));
 
             int begf = Framework.randomOb.random(0, 171);
@@ -249,9 +249,48 @@ namespace ACFramework
                 return "cCritter3Dcharacter";
             }
         }
-	} 
-	
-	class cCritterTreasure : cCritter 
+	}
+
+    class cHandgunBullet : cCritterBullet
+    {
+        public cHandgunBullet()
+        { }
+        public override cCritterBullet Create()
+        // has to be a Create function for every type of bullet -- JC		
+        {
+            return new cHandgunBullet();
+        }
+        public override void initialize(cCritterArmed pshooter)
+        {
+            base.initialize(pshooter);
+            Sprite = new cSpriteQuake(ModelsMD2.CitrusFrog);
+            setRadius(0.2f);
+        }
+        public override bool collide(cCritter pcritter)
+        {
+            bool success = base.collide(pcritter);
+            if (success && pcritter.IsKindOf("cCritter3DPlayer"))
+            {
+                ((cGame3D)Game).SeedCount = 1;
+                ((cGame3D)Game).seedCritters();
+            }
+            return success;
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cHandgunBullet" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cHandgunBullet";
+            }
+        }
+    }
+
+    class cCritterTreasure : cCritter 
 	{   // Try jumping through this hoop
 		
 		public cCritterTreasure( cGame pownergame ) : 
@@ -346,12 +385,12 @@ namespace ACFramework
 		I am flying into the screen from HIZ towards LOZ, and
 		LOX below and HIX above and
 		LOY on the right and HIY on the left. */ 
-			SkyBox.setSideTexture( cRealBox3.HIZ, BitmapRes.fireWall); //Make the near HIZ transparent 
-			SkyBox.setSideTexture( cRealBox3.LOZ, BitmapRes.fireWall ); //Far wall 
-			SkyBox.setSideTexture( cRealBox3.LOX, BitmapRes.fireWall ); //left wall 
-            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.fireWall); //right wall 
-			SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.metalFloor ); //floor 
-			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.blackCeiling ); //ceiling 
+			SkyBox.setSideSolidColor( cRealBox3.HIZ, Color.Aqua ); //Make the near HIZ transparent 
+			SkyBox.setSideSolidColor( cRealBox3.LOZ, Color.Aqua ); //Far wall 
+			SkyBox.setSideSolidColor( cRealBox3.LOX, Color.DarkOrchid ); //left wall 
+            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.Wall2, 2 ); //right wall 
+			SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Graphics3 ); //floor 
+			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.Sky ); //ceiling 
 		
 			WrapFlag = cCritter.BOUNCE; 
 			_seedcount = 7; 
@@ -362,7 +401,37 @@ namespace ACFramework
 		A wall views its "thickness" as in the y direction, which is up here, and its
 		"height" as in the z direction, which is into the screen. */ 
 			//First draw a wall with dy height resting on the bottom of the world.
-
+			float zpos = 0.0f; /* Point on the z axis where we set down the wall.  0 would be center,
+			halfway down the hall, but we can offset it if we like. */ 
+			float height = 0.1f * _border.YSize; 
+			float ycenter = -_border.YRadius + height / 2.0f; 
+			float wallthickness = cGame3D.WALLTHICKNESS;
+            cCritterWall pwall = new cCritterWall( 
+				new cVector3( _border.Midx + 2.0f, ycenter, zpos ), 
+				new cVector3( _border.Hix, ycenter, zpos ), 
+				height, //thickness param for wall's dy which goes perpendicular to the 
+					//baseline established by the frist two args, up the screen 
+				wallthickness, //height argument for this wall's dz  goes into the screen 
+				this );
+			cSpriteTextureBox pspritebox = 
+				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.Wall3, 16 ); //Sets all sides 
+				/* We'll tile our sprites three times along the long sides, and on the
+			short ends, we'll only tile them once, so we reset these two. */
+          pwall.Sprite = pspritebox; 
+		
+		
+			//Then draw a ramp to the top of the wall.  Scoot it over against the right wall.
+			float planckwidth = 0.75f * height; 
+			pwall = new cCritterWall( 
+				new cVector3( _border.Hix -planckwidth / 2.0f, _border.Loy, _border.Hiz - 2.0f), 
+				new cVector3( _border.Hix - planckwidth / 2.0f, _border.Loy + height, zpos ), 
+				planckwidth, //thickness param for wall's dy which is perpenedicualr to the baseline, 
+						//which goes into the screen, so thickness goes to the right 
+				wallthickness, //_border.zradius(),  //height argument for wall's dz which goes into the screen 
+				this );
+            cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, 
+                BitmapRes.Wood2, 2 );
+            pwall.Sprite = stb;
 		
 			cCritterDoor pdwall = new cCritterDoor( 
 				new cVector3( _border.Lox, _border.Loy, _border.Midz ), 
@@ -377,15 +446,15 @@ namespace ACFramework
         {
             Biota.purgeCritters("cCritterWall");
             Biota.purgeCritters("cCritter3Dcharacter");
-            setBorder(50.0f, 50.0f, 100.0f); 
+            setBorder(10.0f, 15.0f, 10.0f); 
 	        cRealBox3 skeleton = new cRealBox3();
             skeleton.copy( _border );
 	        setSkyBox(skeleton);
-	        SkyBox.setAllSidesTexture( BitmapRes.snowWall, 2 );
-	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.snowWall );
-	        SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.cloudySky);
+	        SkyBox.setAllSidesTexture( BitmapRes.Graphics1, 2 );
+	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Concrete );
+	        SkyBox.setSideSolidColor( cRealBox3.HIY, Color.Blue );
 	        _seedcount = 0;
-	        Player.setMoveBox( new cRealBox3( 50.0f, 50.0f, 100.0f ) );
+	        Player.setMoveBox( new cRealBox3( 10.0f, 15.0f, 10.0f ) );
             float zpos = 0.0f; /* Point on the z axis where we set down the wall.  0 would be center,
 			halfway down the hall, but we can offset it if we like. */
             float height = 0.1f * _border.YSize;
@@ -399,7 +468,7 @@ namespace ACFramework
                 wallthickness, //height argument for this wall's dz  goes into the screen 
                 this);
             cSpriteTextureBox pspritebox =
-                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.stoneWall, 16); //Sets all sides 
+                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.Wall3, 16); //Sets all sides 
             /* We'll tile our sprites three times along the long sides, and on the
         short ends, we'll only tile them once, so we reset these two. */
             pwall.Sprite = pspritebox;

@@ -37,9 +37,9 @@ namespace ACFramework
 			_maxspeed = cCritterBullet.MAXSPEED; 
 			Speed = cCritterBullet.BULLETSPEED;
             cSpriteSphere bulletsprite = new cSpriteSphere(cCritter.BULLETRADIUS, 6, 6);
-            bulletsprite.FillColor = Color.Yellow; 
-			Sprite = bulletsprite; /* Also sets cSprite._prismdz to cCritter._defaultprismdz, which we
-			set to CritterWall.BULLETPRISMDZ above. */
+            bulletsprite.FillColor = Color.Yellow;
+            Sprite = new cSpriteQuake(ModelsMD2.Chicken); /* Also sets cSprite._prismdz to cCritter._defaultprismdz, which we
+			    set to CritterWall.BULLETPRISMDZ above. */
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace ACFramework
 
 
     } 
-	
+
 	class cCritterBulletRubber : cCritterBullet 
 	{ 
 		public static readonly new bool DIEATEDGES = false; //If TRUE they disappear at edges, no bounce or wrap.
@@ -462,7 +462,7 @@ namespace ACFramework
 	class cCritterArmed : cCritter 
 	{ 
 		public static readonly float GUNLENGTH = 1.3f; //Ratio of gun length to critter radius, maybe 1.3.
-		public static readonly float WAITSHOOT = 0.06f; // The default interval to wait between shots.
+		public static readonly float WAITSHOOT = 0.6f; // The default interval to wait between shots.
 		protected bool _armed; //Use this to turn the gun on or off.
 		protected float _ageshoot; //Age at last shot, so you wait a bit between shots 
 		protected float _waitshoot; //Time to wait between shots.
@@ -472,7 +472,7 @@ namespace ACFramework
 		protected bool _aimtoattitudelock; //FALSE means aim any old way, TRUE means match aim to attitude tangent 
 		private cCritterBullet _pbulletclass; 
 	//Nonserializable fields 
-		protected LinkedList<cCritterBullet> _bulletlist; 
+		protected LinkedList<cCritterBullet> _bulletlist;
 		
         public cCritterArmed( cGame pownergame = null ) 
             : base( pownergame )
@@ -587,18 +587,17 @@ namespace ACFramework
                     break;
                 }
             } while (_bulletlist.GetNext(out cb));
-		} 
+		}
 
-		
-	//Overloads 
-		
+        //Overloads 
+
         /// <summary>
         /// Makes sure the gun is pionted in the right direction (aim is realigned with the tangent).  Shoots
         /// the gun if the _waitshoot interval has elapsed.  Override this for other features.
         /// </summary>
         /// <param name="pactiveview">Might be useful if the mouse cursor is used.</param>
         /// <param name="dt">The change in time since the last update.</param>
-		public override void update( ACView pactiveview, float dt ) 
+        public override void update( ACView pactiveview, float dt ) 
 		{ 
 		//(1) Call base class update to apply force.
 			base.update( pactiveview, dt ); 
