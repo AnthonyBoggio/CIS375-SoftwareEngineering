@@ -186,7 +186,7 @@ namespace ACFramework
             Sprite = new cSpriteQuake(ModelsMD2.chicken); //////////////////////////
             Sprite = new cSpriteQuake(ModelsMD2.hand);
             Sprite = new cSpriteQuake(ModelsMD2.jack);
-            Sprite = new cSpriteQuake(ModelsMD2.mog);
+            Sprite = new cSpriteQuake(ModelsMD2.mog);//player character
             Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
             Sprite = new cSpriteQuake(ModelsMD2.oluvegold);
             Sprite = new cSpriteQuake(ModelsMD2.oluvegray);
@@ -227,7 +227,7 @@ namespace ACFramework
                 endf = temp;
             }
 
-			Sprite.setstate( State.Other, begf, endf, StateType.Repeat );
+			Sprite.setstate( State.Other, begf, endf, StateType.Repeat ); ////////////////////////
 
 
             _wrapflag = cCritter.BOUNCE;
@@ -262,9 +262,162 @@ namespace ACFramework
                 return "cCritter3Dcharacter";
             }
         }
-	} 
-	
-	class cCritterTreasure : cCritter 
+	}
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    class cEnemyHand : cCritter3Dcharacter
+    {
+        public cEnemyHand(cGame pownergame) : base(pownergame)
+        {
+            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
+            Sprite = new cSpriteQuake(ModelsMD2.hand);
+            //Sprite.setstate(State.Other, 0, 37, StateType.Repeat); //tapping
+            Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Gun
+            //Sprite.setstate(State.Other, 72, 83, StateType.Repeat); //flip off
+            //Sprite.setstate(State.Other, 112, 122, StateType.Repeat); //wave
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cEnemyHand" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cEnemyHand";
+            }
+        }
+    }
+
+    class cEnemyJack : cCritter3Dcharacter
+    {
+        public cEnemyJack(cGame pownergame) : base(pownergame)
+        {
+            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
+            Sprite = new cSpriteQuake(ModelsMD2.jack);
+            Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Change===================================
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cEnemyJack" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cEnemyJack";
+            }
+        }
+    }
+
+    class cEnemyMrFrost : cCritter3Dcharacter
+    {
+        public cEnemyMrFrost(cGame pownergame) : base(pownergame)
+        {
+            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
+            Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
+            Sprite.setstate(State.Other, 0, 11, StateType.Repeat); //idle
+            //Sprite.setstate(State.Other, 84, 94, StateType.Repeat); //pipe
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cEnemyMrFrost" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cEnemyMrFrost";
+            }
+        }
+    }
+
+    /*More states*/
+    class cEnemyOluve : cCritter3Dcharacter
+    {
+        public cEnemyOluve(cGame pownergame) : base(pownergame)
+        {
+            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
+            int ranOluveColor = Framework.models.selectRandomOluve(5, 10);
+            Sprite = new cSpriteQuake(ranOluveColor);
+            Sprite.setstate(State.Other, 6, 37, StateType.Repeat); //turn
+            //Sprite.setstate(State.Other, 94, 111, StateType.Repeat); //spin
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cEnemyOluve" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cEnemyOluve";
+            }
+        }
+    }
+
+    /*'die' (disappear) function*/
+    class cEnemyPenquin : cCritter3Dcharacter
+    {
+        public cEnemyPenquin(cGame pownergame) : base(pownergame)
+        {
+            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
+            Sprite = new cSpriteQuake(ModelsMD2.penguin);
+            Sprite.setstate(State.Other, 135, 172, StateType.Repeat); //sliding
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cEnemyPenquin" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cEnemyPenquin";
+            }
+        }
+    }
+
+    /*add more states?*/
+    class cEnemyPotator : cCritter3Dcharacter
+    {
+        public cEnemyPotator(cGame pownergame) : base(pownergame)
+        {
+            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
+            Sprite = new cSpriteQuake(ModelsMD2.penguin);
+            Sprite.setstate(State.Other, 3, 27, StateType.Repeat); //picture
+            //Sprite.setstate(State.Other, 45, 50, StateType.Repeat); //laughing
+        }
+        public override bool IsKindOf(string str)
+        {
+            return str == "cEnemyPotator" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cEnemyPotator";
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    class cCritterTreasure : cCritter 
 	{   // Try jumping through this hoop
 		
 		public cCritterTreasure( cGame pownergame ) : 
