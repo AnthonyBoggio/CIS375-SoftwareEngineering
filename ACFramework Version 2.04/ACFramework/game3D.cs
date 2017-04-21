@@ -370,6 +370,7 @@ namespace ACFramework
 
         private bool room1 = false; //makes room 1 the current room
         private bool handgunRoom = false; //makes the handgun room the current room
+        private bool bouncyBallRoom = false; //makes the bouncy ball room the current room
 		
 		public cGame3D() 
 		{
@@ -509,12 +510,45 @@ namespace ACFramework
                 new cVector3(_border.Lox, _border.Loy, _border.Midz),
                 new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
                 0.1f, 2, this);
-            cSpriteTextureBox pspritedoor =
+            cSpriteTextureBox pspritedoor = //change this variable name to determine collisions with ths specific door
                 new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
             pdwall.Sprite = pspritedoor;
         }
 
-		public override void seedCritters() 
+        public void setBouncyBallRoom()
+        {
+            Biota.purgeCritters("cCritterWall"); //copy these 2 lines
+            Biota.purgeCritters("cCritter3Dcharacter");
+
+            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
+
+            cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
+            skeleton.copy(_border);
+            setSkyBox(skeleton);
+
+            SkyBox.setAllSidesTexture(BitmapRes.bounceWall, 2); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.bounceWall); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.bounceWall); //ceiling bitmap
+
+            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
+
+            wentThrough = true; //copy these 2 lines
+            startNewRoom = Age;
+
+            //all of this following code is to create the door and the location of the door
+            //already have the door set to be directly across on the other side
+            //change x values for positions on walls
+            //change y valuse to change the way the door is fixed on that particular wall
+            cCritterDoor pdwall = new cCritterDoor(
+                new cVector3(_border.Hix, _border.Loy, _border.Midz), 
+                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
+                0.1f, 2, this);
+            cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
+                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
+            pdwall.Sprite = pspritedoor;
+        }
+
+        public override void seedCritters() 
 		{
 			Biota.purgeCritters( "cCritterBullet" ); 
 			Biota.purgeCritters( "cCritter3Dcharacter" );
@@ -593,8 +627,9 @@ namespace ACFramework
 
             if (doorcollision == true)
             {
-                room1 = false; //makes the room 1 false
-                handgunRoom = true; //makes handgunRoom true so that it draws that next
+                room1 = false; //makes the room 1 false////here for testing purposes
+                handgunRoom = false; //makes handgunRoom true so that is what is the next room
+                bouncyBallRoom = true; //makes the bouncy ball room true so that is what is the next room
                 doorcollision = false;
             }
 
@@ -602,9 +637,13 @@ namespace ACFramework
              * *************************************************************************************
             */
 
-            if(handgunRoom == true) //if collides with right door, sets handGun roomto true, and makes this the next room you go into
+            if(handgunRoom == true) //if collideing with right door, takes you to the handgun room
             {
                 setHandgunRoom();
+            }
+            else if(bouncyBallRoom == true) //if colliding with right door, takes you to bouncy ball room
+            {
+                setBouncyBallRoom();
             }
 		} 
 		
