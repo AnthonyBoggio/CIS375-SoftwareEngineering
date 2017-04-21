@@ -44,7 +44,7 @@ namespace ACFramework
 	
 	class cCritter3DPlayer : cCritterArmedPlayer 
 	{ 
-        private bool warningGiven = false;
+        //private bool warningGiven = false; //not needed at the moment
 		
         public cCritter3DPlayer( cGame pownergame ) 
             : base( pownergame ) 
@@ -76,12 +76,13 @@ namespace ACFramework
         public override void update(ACView pactiveview, float dt)
         {
             base.update(pactiveview, dt); //Always call this first
-            if (!warningGiven && distanceTo(new cVector3(Game.Border.Lox, Game.Border.Loy,
-                Game.Border.Midz)) < 3.0f)
-            {
-                warningGiven = true;
-                MessageBox.Show("DON'T GO THROUGH THAT DOOR!!!  DON'T EVEN THINK ABOUT IT!!!");
-            }
+            
+            
+            //if (!warningGiven && distanceTo(new cVector3(Game.Border.Lox, Game.Border.Loy,
+            //    Game.Border.Midz)) < 3.0f)
+            //{
+            //    warningGiven = false; //changed to false so that you just go through the door without warning
+            //}
  
         } 
 
@@ -292,27 +293,25 @@ namespace ACFramework
 
     class cCritterTreasure : cCritter 
 	{   // Try jumping through this hoop
-		
 		public cCritterTreasure( cGame pownergame ) : 
 		base( pownergame ) 
 		{ 
 			/* The sprites look nice from afar, but bitmap speed is really slow
-		when you get close to them, so don't use this. */ 
-			cPolygon ppoly = new cPolygon( 24 ); 
+		when you get close to them, so don't use this. */
+        cPolygon ppoly = new cPolygon( 24 ); 
 			ppoly.Filled = false; 
 			ppoly.LineWidthWeight = 0.5f;
 			Sprite = ppoly; 
 			_collidepriority = cCollider.CP_PLAYER + 1; /* Let this guy call collide on the
 			player, as his method is overloaded in a special way. */ 
 			rotate( new cSpin( (float) Math.PI / 2.0f, new cVector3(0.0f, 0.0f, 1.0f) )); /* Trial and error shows this
-			rotation works to make it face the z diretion. */ 
-			setRadius( cGame3D.TREASURERADIUS ); 
+			rotation works to make it face the z diretion. */ 	
+        setRadius( cGame3D.TREASURERADIUS ); 
 			FixedFlag = true; 
 			moveTo( new cVector3( _movebox.Midx, _movebox.Midy - 2.0f, 
 				_movebox.Loz - 1.5f * cGame3D.TREASURERADIUS )); 
 		} 
 
-		
 		public override bool collide( cCritter pcritter ) 
 		{ 
 			if ( contains( pcritter )) //disk of pcritter is wholly inside my disk 
@@ -362,11 +361,15 @@ namespace ACFramework
 		public static readonly float TREASURERADIUS = 1.2f; 
 		public static readonly float WALLTHICKNESS = 0.5f; 
 		public static readonly float PLAYERRADIUS = 0.2f; 
-		public static readonly float MAXPLAYERSPEED = 30.0f; 
-		private cCritterTreasure _ptreasure; 
+		public static readonly float MAXPLAYERSPEED = 25.0f; 
+		//private cCritterTreasure _ptreasure; //Currently not in use0
 		private bool doorcollision;
+        private bool doorcollisionHnadgunRoom;
         private bool wentThrough = false;
         private float startNewRoom;
+
+        private bool room1 = false; //makes room 1 the current room
+        private bool handgunRoom = false; //makes the handgun room the current room
 		
 		public cGame3D() 
 		{
@@ -388,14 +391,14 @@ namespace ACFramework
 			SkyBox.setSideSolidColor( cRealBox3.HIZ, Color.Aqua ); //Make the near HIZ transparent 
 			SkyBox.setSideSolidColor( cRealBox3.LOZ, Color.Aqua ); //Far wall 
 			SkyBox.setSideSolidColor( cRealBox3.LOX, Color.DarkOrchid ); //left wall 
-            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.Wall2, 2 ); //right wall 
-			SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Graphics3 ); //floor 
-			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.Sky ); //ceiling 
+            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.fireWall, 2 ); //right wall 
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.metalFloor ); //floor 
+			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.blackCeiling ); //ceiling 
 		
 			WrapFlag = cCritter.BOUNCE; 
 			_seedcount = 7; 
 			setPlayer( new cCritter3DPlayer( this )); 
-			_ptreasure = new cCritterTreasure( this ); 
+			//_ptreasure = new cCritterTreasure( this ); //dont need this at the moment
 		
 			/* In this world the x and y go left and up respectively, while z comes out of the screen.
 		A wall views its "thickness" as in the y direction, which is up here, and its
@@ -414,7 +417,7 @@ namespace ACFramework
 				wallthickness, //height argument for this wall's dz  goes into the screen 
 				this );
 			cSpriteTextureBox pspritebox = 
-				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.Wall3, 16 ); //Sets all sides 
+				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.fireWall, 16 ); //Sets all sides 
 				/* We'll tile our sprites three times along the long sides, and on the
 			short ends, we'll only tile them once, so we reset these two. */
           pwall.Sprite = pspritebox; 
@@ -430,7 +433,7 @@ namespace ACFramework
 				wallthickness, //_border.zradius(),  //height argument for wall's dz which goes into the screen 
 				this );
             cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, 
-                BitmapRes.Wood2, 2 );
+                BitmapRes.grassFloor, 2 );
             pwall.Sprite = stb;
 		
 			cCritterDoor pdwall = new cCritterDoor( 
@@ -439,8 +442,8 @@ namespace ACFramework
 				0.1f, 2, this ); 
 			cSpriteTextureBox pspritedoor = 
 				new cSpriteTextureBox( pdwall.Skeleton, BitmapRes.Door ); 
-			pdwall.Sprite = pspritedoor; 
-		} 
+			pdwall.Sprite = pspritedoor;
+        } 
 
         public void setRoom1( )
         {
@@ -450,8 +453,8 @@ namespace ACFramework
 	        cRealBox3 skeleton = new cRealBox3();
             skeleton.copy( _border );
 	        setSkyBox(skeleton);
-	        SkyBox.setAllSidesTexture( BitmapRes.Graphics1, 2 );
-	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Concrete );
+	        SkyBox.setAllSidesTexture( BitmapRes.fireWall, 2 );
+	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.fireWall );
 	        SkyBox.setSideSolidColor( cRealBox3.HIY, Color.Blue );
 	        _seedcount = 0;
 	        Player.setMoveBox( new cRealBox3( 10.0f, 15.0f, 10.0f ) );
@@ -468,14 +471,49 @@ namespace ACFramework
                 wallthickness, //height argument for this wall's dz  goes into the screen 
                 this);
             cSpriteTextureBox pspritebox =
-                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.Wall3, 16); //Sets all sides 
+                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.cloudySky, 16); //Sets all sides 
             /* We'll tile our sprites three times along the long sides, and on the
-        short ends, we'll only tile them once, so we reset these two. */
+        short ends, we'll only tile them once, so we reset these two. */ 
             pwall.Sprite = pspritebox;
             wentThrough = true;
             startNewRoom = Age;
         }
-		
+
+        /**********************************************************************************
+         * ********************************************************************************
+        */
+        
+        //Creates the room which has the hand guns that shoot the chickens
+        public void setHandgunRoom()
+        {
+            Biota.purgeCritters("cCritterWall"); //copy these 2 lines
+            Biota.purgeCritters("cCritter3Dcharacter");
+
+            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
+
+            cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
+            skeleton.copy(_border);
+            setSkyBox(skeleton);
+
+            SkyBox.setAllSidesTexture(BitmapRes.fireWall, 2); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.metalFloor); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.metalFloor); //ceiling bitmap
+
+            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
+           
+            wentThrough = true; //copy these 2 lines
+            startNewRoom = Age;
+
+            //all of this following code is to create the door and the location of the door
+            cCritterDoor pdwall = new cCritterDoor(
+                new cVector3(_border.Lox, _border.Loy, _border.Midz),
+                new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
+                0.1f, 2, this);
+            cSpriteTextureBox pspritedoor =
+                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
+            pdwall.Sprite = pspritedoor;
+        }
+
 		public override void seedCritters() 
 		{
 			Biota.purgeCritters( "cCritterBullet" ); 
@@ -550,14 +588,23 @@ namespace ACFramework
 
             if (wentThrough && (Age - startNewRoom) > 2.0f)
             {
-                MessageBox.Show("What an idiot.");
                 wentThrough = false;
             }
 
             if (doorcollision == true)
             {
-                setRoom1();
+                room1 = false; //makes the room 1 false
+                handgunRoom = true; //makes handgunRoom true so that it draws that next
                 doorcollision = false;
+            }
+
+            /***************************************************************************************
+             * *************************************************************************************
+            */
+
+            if(handgunRoom == true) //if collides with right door, sets handGun roomto true, and makes this the next room you go into
+            {
+                setHandgunRoom();
             }
 		} 
 		
