@@ -44,12 +44,12 @@ namespace ACFramework
 	
 	class cCritter3DPlayer : cCritterArmedPlayer 
 	{ 
-        //private bool warningGiven = false; //not needed at the moment
+        private bool warningGiven = false;
 		
         public cCritter3DPlayer( cGame pownergame ) 
             : base( pownergame ) 
 		{ 
-			BulletClass = new cHandgunBullet( );
+			BulletClass = new cHandgunBullet( ); 
             Sprite = new cSpriteSphere(); 
 			Sprite.FillColor = Color.DarkGreen; 
 			Sprite.SpriteAttitude = cMatrix3.scale( 2, 0.8f, 0.4f ); 
@@ -76,13 +76,12 @@ namespace ACFramework
         public override void update(ACView pactiveview, float dt)
         {
             base.update(pactiveview, dt); //Always call this first
-
-
-            //if (!warningGiven && distanceTo(new cVector3(Game.Border.Lox, Game.Border.Loy,
-            //    Game.Border.Midz)) < 3.0f)
-            //{
-            //    warningGiven = false; //changed to false so that you just go through the door without warning
-            //}
+            if (!warningGiven && distanceTo(new cVector3(Game.Border.Lox, Game.Border.Loy,
+                Game.Border.Midz)) < 3.0f)
+            {
+                warningGiven = true;
+                MessageBox.Show("DON'T GO THROUGH THAT DOOR!!!  DON'T EVEN THINK ABOUT IT!!!");
+            }
  
         } 
 
@@ -181,23 +180,10 @@ namespace ACFramework
 			MaxSpeed = 30.0f;
             if (pownergame != null) //Just to be safe.
                 Sprite = new cSpriteQuake(Framework.models.selectRandomCritter());
-
+            
             // example of setting a specific model
             // setSprite(new cSpriteQuake(ModelsMD2.Knight));
-            Sprite = new cSpriteQuake(ModelsMD2.chicken); //////////////////////////
-            Sprite = new cSpriteQuake(ModelsMD2.hand);
-            Sprite = new cSpriteQuake(ModelsMD2.jack);
-            Sprite = new cSpriteQuake(ModelsMD2.mog);//player character
-            Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
-            Sprite = new cSpriteQuake(ModelsMD2.oluvegold);
-            Sprite = new cSpriteQuake(ModelsMD2.oluvegray);
-            Sprite = new cSpriteQuake(ModelsMD2.oluvegreen);
-            Sprite = new cSpriteQuake(ModelsMD2.oluvered);
-            Sprite = new cSpriteQuake(ModelsMD2.oluvesilver);
-            Sprite = new cSpriteQuake(ModelsMD2.oluvewhite);
-            Sprite = new cSpriteQuake(ModelsMD2.penguin);
-            Sprite = new cSpriteQuake(ModelsMD2.potator);
-
+            
             if ( Sprite.IsKindOf( "cSpriteQuake" )) //Don't let the figurines tumble.  
 			{ 
 				AttitudeToMotionLock = false;   
@@ -215,7 +201,7 @@ namespace ACFramework
 			randomizeVelocity( 0.0f, 30.0f, false ); 
 
                         
-			if ( pownergame != null ) //Then we know we added this to a game so player() is valid
+			if ( pownergame != null ) //Then we know we added this to a game so player() is valid 
 				addForce( new cForceObjectSeek( Player, 0.5f ));
 
             int begf = Framework.randomOb.random(0, 171);
@@ -228,7 +214,7 @@ namespace ACFramework
                 endf = temp;
             }
 
-			Sprite.setstate( State.Other, begf, endf, StateType.Repeat ); ////////////////////////
+			Sprite.setstate( State.Other, begf, endf, StateType.Repeat );
 
 
             _wrapflag = cCritter.BOUNCE;
@@ -270,14 +256,14 @@ namespace ACFramework
         public cHandgunBullet()
         { }
         public override cCritterBullet Create()
-        // has to be a Create function for every type of bullet -- JC
+        // has to be a Create function for every type of bullet -- JC		
         {
             return new cHandgunBullet();
         }
         public override void initialize(cCritterArmed pshooter)
         {
             base.initialize(pshooter);
-            Sprite = new cSpriteQuake(ModelsMD2.CitrusFrog);
+            Sprite = new cSpriteQuake(ModelsMD2.Chicken);
             setRadius(0.2f);
         }
         public override bool collide(cCritter pcritter)
@@ -304,183 +290,29 @@ namespace ACFramework
         }
     }
 
-    class cCritterTreasure : cCritter
-	}
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
-    class cEnemyHand : cCritter3Dcharacter
-    {
-        public cEnemyHand(cGame pownergame) : base(pownergame)
-        {
-            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
-            Sprite = new cSpriteQuake(ModelsMD2.hand);
-            //Sprite.setstate(State.Other, 0, 37, StateType.Repeat); //tapping
-            Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Gun
-            //Sprite.setstate(State.Other, 72, 83, StateType.Repeat); //flip off
-            //Sprite.setstate(State.Other, 112, 122, StateType.Repeat); //wave
-        }
-        public override bool IsKindOf(string str)
-        {
-            return str == "cEnemyHand" || base.IsKindOf(str);
-        }
-
-        public override string RuntimeClass
-        {
-            get
-            {
-                return "cEnemyHand";
-            }
-        }
-    }
-
-    class cEnemyJack : cCritter3Dcharacter
-    {
-        public cEnemyJack(cGame pownergame) : base(pownergame)
-        {
-            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
-            Sprite = new cSpriteQuake(ModelsMD2.jack);
-            Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Change===================================
-        }
-        public override bool IsKindOf(string str)
-        {
-            return str == "cEnemyJack" || base.IsKindOf(str);
-        }
-
-        public override string RuntimeClass
-        {
-            get
-            {
-                return "cEnemyJack";
-            }
-        }
-    }
-
-    class cEnemyMrFrost : cCritter3Dcharacter
-    {
-        public cEnemyMrFrost(cGame pownergame) : base(pownergame)
-        {
-            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
-            Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
-            Sprite.setstate(State.Other, 0, 11, StateType.Repeat); //idle
-            //Sprite.setstate(State.Other, 84, 94, StateType.Repeat); //pipe
-        }
-        public override bool IsKindOf(string str)
-        {
-            return str == "cEnemyMrFrost" || base.IsKindOf(str);
-        }
-
-        public override string RuntimeClass
-        {
-            get
-            {
-                return "cEnemyMrFrost";
-            }
-        }
-    }
-
-    /*More states*/
-    class cEnemyOluve : cCritter3Dcharacter
-    {
-        public cEnemyOluve(cGame pownergame) : base(pownergame)
-        {
-            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
-            int ranOluveColor = Framework.models.selectRandomOluve(5, 10);
-            Sprite = new cSpriteQuake(ranOluveColor);
-            Sprite.setstate(State.Other, 6, 37, StateType.Repeat); //turn
-            //Sprite.setstate(State.Other, 94, 111, StateType.Repeat); //spin
-        }
-        public override bool IsKindOf(string str)
-        {
-            return str == "cEnemyOluve" || base.IsKindOf(str);
-        }
-
-        public override string RuntimeClass
-        {
-            get
-            {
-                return "cEnemyOluve";
-            }
-        }
-    }
-
-    /*'die' (disappear) function*/
-    class cEnemyPenquin : cCritter3Dcharacter
-    {
-        public cEnemyPenquin(cGame pownergame) : base(pownergame)
-        {
-            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
-            Sprite = new cSpriteQuake(ModelsMD2.penguin);
-            Sprite.setstate(State.Other, 135, 172, StateType.Repeat); //sliding
-        }
-        public override bool IsKindOf(string str)
-        {
-            return str == "cEnemyPenquin" || base.IsKindOf(str);
-        }
-
-        public override string RuntimeClass
-        {
-            get
-            {
-                return "cEnemyPenquin";
-            }
-        }
-    }
-
-    /*add more states?*/
-    class cEnemyPotator : cCritter3Dcharacter
-    {
-        public cEnemyPotator(cGame pownergame) : base(pownergame)
-        {
-            _position = new cVector3(); //add postions as x, y, z being hight //Change===================================
-            Sprite = new cSpriteQuake(ModelsMD2.penguin);
-            Sprite.setstate(State.Other, 3, 27, StateType.Repeat); //picture
-            //Sprite.setstate(State.Other, 45, 50, StateType.Repeat); //laughing
-        }
-        public override bool IsKindOf(string str)
-        {
-            return str == "cEnemyPotator" || base.IsKindOf(str);
-        }
-
-        public override string RuntimeClass
-        {
-            get
-            {
-                return "cEnemyPotator";
-            }
-        }
-    }
-
-
-
-
-
-
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    class cCritterTreasure : cCritter
+    class cCritterTreasure : cCritter 
 	{   // Try jumping through this hoop
+		
 		public cCritterTreasure( cGame pownergame ) : 
 		base( pownergame ) 
 		{ 
 			/* The sprites look nice from afar, but bitmap speed is really slow
-		when you get close to them, so don't use this. */
-        cPolygon ppoly = new cPolygon( 24 );
+		when you get close to them, so don't use this. */ 
+			cPolygon ppoly = new cPolygon( 24 ); 
 			ppoly.Filled = false; 
 			ppoly.LineWidthWeight = 0.5f;
 			Sprite = ppoly; 
 			_collidepriority = cCollider.CP_PLAYER + 1; /* Let this guy call collide on the
 			player, as his method is overloaded in a special way. */ 
 			rotate( new cSpin( (float) Math.PI / 2.0f, new cVector3(0.0f, 0.0f, 1.0f) )); /* Trial and error shows this
-			rotation works to make it face the z diretion. */
-        setRadius( cGame3D.TREASURERADIUS );
+			rotation works to make it face the z diretion. */ 
+			setRadius( cGame3D.TREASURERADIUS ); 
 			FixedFlag = true; 
 			moveTo( new cVector3( _movebox.Midx, _movebox.Midy - 2.0f, 
 				_movebox.Loz - 1.5f * cGame3D.TREASURERADIUS )); 
 		} 
 
+		
 		public override bool collide( cCritter pcritter ) 
 		{ 
 			if ( contains( pcritter )) //disk of pcritter is wholly inside my disk 
@@ -530,17 +362,12 @@ namespace ACFramework
 		public static readonly float TREASURERADIUS = 1.2f; 
 		public static readonly float WALLTHICKNESS = 0.5f; 
 		public static readonly float PLAYERRADIUS = 0.2f; 
-		public static readonly float MAXPLAYERSPEED = 25.0f;
-		//private cCritterTreasure _ptreasure; //Currently not in use0
+		public static readonly float MAXPLAYERSPEED = 30.0f; 
+		private cCritterTreasure _ptreasure; 
 		private bool doorcollision;
-        private bool doorcollisionHnadgunRoom;
         private bool wentThrough = false;
         private float startNewRoom;
-
-        private bool room1 = false; //makes room 1 the current room
-        private bool handgunRoom = false; //makes the handgun room the current room
-        private bool bouncyBallRoom = false; //makes the bouncy ball room the current room
-
+		
 		public cGame3D() 
 		{
 			doorcollision = false; 
@@ -558,17 +385,17 @@ namespace ACFramework
 		I am flying into the screen from HIZ towards LOZ, and
 		LOX below and HIX above and
 		LOY on the right and HIY on the left. */ 
-			SkyBox.setSideSolidColor( cRealBox3.HIZ, Color.Aqua ); //Make the near HIZ transparent
-			SkyBox.setSideSolidColor( cRealBox3.LOZ, Color.Aqua ); //Far wall
-			SkyBox.setSideSolidColor( cRealBox3.LOX, Color.DarkOrchid ); //left wall
-            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.fireWall, 2 ); //right wall
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.metalFloor ); //floor
-			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.blackCeiling ); //ceiling
+			SkyBox.setSideSolidColor( cRealBox3.HIZ, Color.Aqua ); //Make the near HIZ transparent 
+			SkyBox.setSideSolidColor( cRealBox3.LOZ, Color.Aqua ); //Far wall 
+			SkyBox.setSideSolidColor( cRealBox3.LOX, Color.DarkOrchid ); //left wall 
+            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.Wall2, 2 ); //right wall 
+			SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Graphics3 ); //floor 
+			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.Sky ); //ceiling 
 		
 			WrapFlag = cCritter.BOUNCE; 
 			_seedcount = 7; 
 			setPlayer( new cCritter3DPlayer( this )); 
-			//_ptreasure = new cCritterTreasure( this ); //dont need this at the moment
+			_ptreasure = new cCritterTreasure( this ); 
 		
 			/* In this world the x and y go left and up respectively, while z comes out of the screen.
 		A wall views its "thickness" as in the y direction, which is up here, and its
@@ -587,7 +414,7 @@ namespace ACFramework
 				wallthickness, //height argument for this wall's dz  goes into the screen 
 				this );
 			cSpriteTextureBox pspritebox = 
-				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.fireWall, 16 ); //Sets all sides
+				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.Wall3, 16 ); //Sets all sides 
 				/* We'll tile our sprites three times along the long sides, and on the
 			short ends, we'll only tile them once, so we reset these two. */
           pwall.Sprite = pspritebox; 
@@ -603,7 +430,7 @@ namespace ACFramework
 				wallthickness, //_border.zradius(),  //height argument for wall's dz which goes into the screen 
 				this );
             cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, 
-                BitmapRes.grassFloor, 2 );
+                BitmapRes.Wood2, 2 );
             pwall.Sprite = stb;
 		
 			cCritterDoor pdwall = new cCritterDoor( 
@@ -612,8 +439,8 @@ namespace ACFramework
 				0.1f, 2, this ); 
 			cSpriteTextureBox pspritedoor = 
 				new cSpriteTextureBox( pdwall.Skeleton, BitmapRes.Door ); 
-			pdwall.Sprite = pspritedoor;
-        }
+			pdwall.Sprite = pspritedoor; 
+		} 
 
         public void setRoom1( )
         {
@@ -623,8 +450,8 @@ namespace ACFramework
 	        cRealBox3 skeleton = new cRealBox3();
             skeleton.copy( _border );
 	        setSkyBox(skeleton);
-	        SkyBox.setAllSidesTexture( BitmapRes.fireWall, 2 );
-	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.fireWall );
+	        SkyBox.setAllSidesTexture( BitmapRes.Graphics1, 2 );
+	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.Concrete );
 	        SkyBox.setSideSolidColor( cRealBox3.HIY, Color.Blue );
 	        _seedcount = 0;
 	        Player.setMoveBox( new cRealBox3( 10.0f, 15.0f, 10.0f ) );
@@ -641,83 +468,15 @@ namespace ACFramework
                 wallthickness, //height argument for this wall's dz  goes into the screen 
                 this);
             cSpriteTextureBox pspritebox =
-                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.cloudySky, 16); //Sets all sides
+                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.Wall3, 16); //Sets all sides 
             /* We'll tile our sprites three times along the long sides, and on the
         short ends, we'll only tile them once, so we reset these two. */
             pwall.Sprite = pspritebox;
             wentThrough = true;
             startNewRoom = Age;
         }
-
-        /**********************************************************************************
-         * ********************************************************************************
-        */
-
-        //Creates the room which has the hand guns that shoot the chickens
-        public void setHandgunRoom()
-        {
-            Biota.purgeCritters("cCritterWall"); //copy these 2 lines
-            Biota.purgeCritters("cCritter3Dcharacter");
-
-            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
-
-            cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
-            skeleton.copy(_border);
-            setSkyBox(skeleton);
-
-            SkyBox.setAllSidesTexture(BitmapRes.fireWall, 2); //wall bitmap
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.metalFloor); //floor bitmap
-            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.metalFloor); //ceiling bitmap
-
-            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
-
-            wentThrough = true; //copy these 2 lines
-            startNewRoom = Age;
-
-            //all of this following code is to create the door and the location of the door
-            cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Lox, _border.Loy, _border.Midz),
-                new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
-                0.1f, 2, this);
-            cSpriteTextureBox pspritedoor = //change this variable name to determine collisions with ths specific door
-                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
-            pdwall.Sprite = pspritedoor;
-        }
-
-        public void setBouncyBallRoom()
-        {
-            Biota.purgeCritters("cCritterWall"); //copy these 2 lines
-            Biota.purgeCritters("cCritter3Dcharacter");
-
-            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
-
-            cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
-            skeleton.copy(_border);
-            setSkyBox(skeleton);
-
-            SkyBox.setAllSidesTexture(BitmapRes.bounceWall, 2); //wall bitmap
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.bounceWall); //floor bitmap
-            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.bounceWall); //ceiling bitmap
-
-            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
-
-            wentThrough = true; //copy these 2 lines
-            startNewRoom = Age;
-
-            //all of this following code is to create the door and the location of the door
-            //already have the door set to be directly across on the other side
-            //change x values for positions on walls
-            //change y valuse to change the way the door is fixed on that particular wall
-            cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Hix, _border.Loy, _border.Midz),
-                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
-                0.1f, 2, this);
-            cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
-                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
-            pdwall.Sprite = pspritedoor;
-        }
-
-        public override void seedCritters()
+		
+		public override void seedCritters() 
 		{
 			Biota.purgeCritters( "cCritterBullet" ); 
 			Biota.purgeCritters( "cCritter3Dcharacter" );
@@ -791,30 +550,16 @@ namespace ACFramework
 
             if (wentThrough && (Age - startNewRoom) > 2.0f)
             {
+                MessageBox.Show("What an idiot.");
                 wentThrough = false;
             }
 
             if (doorcollision == true)
             {
-                room1 = false; //makes the room 1 false////here for testing purposes
-                handgunRoom = false; //makes handgunRoom true so that is what is the next room
-                bouncyBallRoom = true; //makes the bouncy ball room true so that is what is the next room
+                setRoom1();
                 doorcollision = false;
             }
-
-            /***************************************************************************************
-             * *************************************************************************************
-            */
-
-            if(handgunRoom == true) //if collideing with right door, takes you to the handgun room
-            {
-                setHandgunRoom();
-            }
-            else if(bouncyBallRoom == true) //if colliding with right door, takes you to bouncy ball room
-            {
-                setBouncyBallRoom();
-            }
-		}
+		} 
 		
 	} 
 	
