@@ -305,9 +305,7 @@ namespace ACFramework
         }
     }
 
-    //class cCritterTreasure : cCritter
-	//}
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     class cEnemyHand : cCritter3Dcharacter
     {
         public cEnemyHand(cGame pownergame) : base(pownergame)
@@ -451,14 +449,7 @@ namespace ACFramework
         }
     }
 
-
-
-
-
-
-
-
-
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -535,7 +526,7 @@ namespace ACFramework
 		public static readonly float MAXPLAYERSPEED = 25.0f;
 		//private cCritterTreasure _ptreasure; //Currently not in use0
 		private bool doorcollision;
-        private bool doorcollisionHnadgunRoom;
+        private bool doorcollisionHandgunRoom;
         private bool wentThrough = false;
         private float startNewRoom;
 
@@ -554,30 +545,24 @@ namespace ACFramework
 			cRealBox3 skeleton = new cRealBox3();
             skeleton.copy(_border);
 			setSkyBox( skeleton );
-		/* In this world the coordinates are screwed up to match the screwed up
-		listener that I use.  I should fix the listener and the coords.
-		Meanwhile...
-		I am flying into the screen from HIZ towards LOZ, and
-		LOX below and HIX above and
-		LOY on the right and HIY on the left. */ 
-			SkyBox.setSideSolidColor( cRealBox3.HIZ, Color.Aqua ); //Make the near HIZ transparent
-			SkyBox.setSideSolidColor( cRealBox3.LOZ, Color.Aqua ); //Far wall
-			SkyBox.setSideSolidColor( cRealBox3.LOX, Color.DarkOrchid ); //left wall
-            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.fireWall, 2 ); //right wall
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.metalFloor ); //floor
-			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.blackCeiling ); //ceiling
+            
+            SkyBox.setSideTexture(cRealBox3.HIZ, BitmapRes.snowWall); //Make the near HIZ transparent
+            SkyBox.setSideTexture(cRealBox3.LOZ, BitmapRes.snowWall); //Far wall
+            SkyBox.setSideTexture(cRealBox3.LOX, BitmapRes.snowWall); //left wall
+            SkyBox.setSideTexture( cRealBox3.HIX, BitmapRes.snowWall); //right wall
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.iceFloor ); //floor
+			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.cloudySky ); //ceiling
 		
 			WrapFlag = cCritter.BOUNCE; 
 			_seedcount = 7; 
-			setPlayer( new cCritter3DPlayer( this )); 
-			//_ptreasure = new cCritterTreasure( this ); //dont need this at the moment
-		
-			/* In this world the x and y go left and up respectively, while z comes out of the screen.
-		A wall views its "thickness" as in the y direction, which is up here, and its
-		"height" as in the z direction, which is into the screen. */ 
-			//First draw a wall with dy height resting on the bottom of the world.
-			float zpos = 0.0f; /* Point on the z axis where we set down the wall.  0 would be center,
-			halfway down the hall, but we can offset it if we like. */ 
+			setPlayer( new cCritter3DPlayer( this ));
+            //_ptreasure = new cCritterTreasure( this ); //dont need this at the moment
+
+            // In this world the x and y go left and up respectively, while z comes out of the screen.
+            //A wall views its "thickness" as in the y direction, which is up here, and its "height" as in the z direction, which is into the screen.  
+            //First draw a wall with dy height resting on the bottom of the world.
+            /*
+            float zpos = 0.0f; // Point on the z axis where we set down the wall.  0 would be center, halfway down the hall, but we can offset it if we like. 
 			float height = 0.1f * _border.YSize; 
 			float ycenter = -_border.YRadius + height / 2.0f; 
 			float wallthickness = cGame3D.WALLTHICKNESS;
@@ -588,10 +573,8 @@ namespace ACFramework
 					//baseline established by the frist two args, up the screen 
 				wallthickness, //height argument for this wall's dz  goes into the screen 
 				this );
-			cSpriteTextureBox pspritebox = 
-				new cSpriteTextureBox( pwall.Skeleton, BitmapRes.fireWall, 16 ); //Sets all sides
-				/* We'll tile our sprites three times along the long sides, and on the
-			short ends, we'll only tile them once, so we reset these two. */
+			cSpriteTextureBox pspritebox = new cSpriteTextureBox( pwall.Skeleton, BitmapRes.fireWall, 1); //Sets all sides
+				// We'll tile our sprites three times along the long sides, and on the short ends, we'll only tile them once, so we reset these two. 
           pwall.Sprite = pspritebox; 
 		
 		
@@ -600,20 +583,19 @@ namespace ACFramework
 			pwall = new cCritterWall( 
 				new cVector3( _border.Hix -planckwidth / 2.0f, _border.Loy, _border.Hiz - 2.0f), 
 				new cVector3( _border.Hix - planckwidth / 2.0f, _border.Loy + height, zpos ), 
-				planckwidth, //thickness param for wall's dy which is perpenedicualr to the baseline, 
-						//which goes into the screen, so thickness goes to the right 
+				planckwidth,     //thickness param for wall's dy which is perpenedicualr to the baseline, 
+						        //which goes into the screen, so thickness goes to the right 
 				wallthickness, //_border.zradius(),  //height argument for wall's dz which goes into the screen 
 				this );
-            cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, 
-                BitmapRes.grassFloor, 2 );
+            cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, BitmapRes.grassFloor, 1);
             pwall.Sprite = stb;
-		
+		*/
 			cCritterDoor pdwall = new cCritterDoor( 
 				new cVector3( _border.Lox, _border.Loy, _border.Midz ), 
 				new cVector3( _border.Lox, _border.Midy - 3, _border.Midz ), 
 				0.1f, 2, this ); 
-			cSpriteTextureBox pspritedoor = 
-				new cSpriteTextureBox( pdwall.Skeleton, BitmapRes.Door ); 
+            
+			cSpriteTextureBox pspritedoor = new cSpriteTextureBox( pdwall.Skeleton, BitmapRes.Door, 1); 
 			pdwall.Sprite = pspritedoor;
         }
 
@@ -642,18 +624,13 @@ namespace ACFramework
                 //baseline established by the frist two args, up the screen 
                 wallthickness, //height argument for this wall's dz  goes into the screen 
                 this);
-            cSpriteTextureBox pspritebox =
-                new cSpriteTextureBox(pwall.Skeleton, BitmapRes.cloudySky, 16); //Sets all sides
-            /* We'll tile our sprites three times along the long sides, and on the
-        short ends, we'll only tile them once, so we reset these two. */
+            cSpriteTextureBox pspritebox = new cSpriteTextureBox(pwall.Skeleton, BitmapRes.cloudySky, 1); //last number sets tiles
             pwall.Sprite = pspritebox;
             wentThrough = true;
             startNewRoom = Age;
         }
 
-        /**********************************************************************************
-         * ********************************************************************************
-        */
+        /*******************************************************************************************************************************************************************/
 
         //Creates the room which has the hand guns that shoot the chickens
         public void setHandgunRoom()
@@ -682,7 +659,7 @@ namespace ACFramework
                 new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
                 0.1f, 2, this);
             cSpriteTextureBox pspritedoor = //change this variable name to determine collisions with ths specific door
-                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
+                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door, 1);//last number sets tiles
             pdwall.Sprite = pspritedoor;
         }
 
@@ -770,8 +747,7 @@ namespace ACFramework
             }
 		} 
 
-		/* Move over to be above the
-			lower left corner where the player is.  In 3D, use a low viewpoint low looking up. */ 
+		/* Move over to be above the lower left corner where the player is.  In 3D, use a low viewpoint low looking up. */ 
 	
 		public override void adjustGameParameters() 
 		{
@@ -804,9 +780,7 @@ namespace ACFramework
                 doorcollision = false;
             }
 
-            /***************************************************************************************
-             * *************************************************************************************
-            */
+            /***********************************************************************************************************************/
 
             if(handgunRoom == true) //if collideing with right door, takes you to the handgun room
             {
