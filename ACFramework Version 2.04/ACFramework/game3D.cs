@@ -277,7 +277,7 @@ namespace ACFramework
         public override void initialize(cCritterArmed pshooter)
         {
             base.initialize(pshooter);
-            Sprite = new cSpriteQuake(ModelsMD2.CitrusFrog);
+            Sprite = new cSpriteQuake(ModelsMD2.chicken);
             setRadius(0.2f);
         }
         public override bool collide(cCritter pcritter)
@@ -285,8 +285,9 @@ namespace ACFramework
             bool success = base.collide(pcritter);
             if (success && pcritter.IsKindOf("cCritter3DPlayer"))
             {
-                ((cGame3D)Game).SeedCount = 1;
-                ((cGame3D)Game).seedCritters();
+               ((cGame3D)Game).SeedCount = 1;
+
+               ((cGame3D)Game).seedCritters();
             }
             return success;
         }
@@ -304,8 +305,8 @@ namespace ACFramework
         }
     }
 
-    class cCritterTreasure : cCritter
-	}
+    //class cCritterTreasure : cCritter
+	//}
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     class cEnemyHand : cCritter3Dcharacter
     {
@@ -331,6 +332,7 @@ namespace ACFramework
             }
         }
     }
+
 
     class cEnemyJack : cCritter3Dcharacter
     {

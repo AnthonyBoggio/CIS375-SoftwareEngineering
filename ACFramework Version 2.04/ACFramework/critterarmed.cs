@@ -38,7 +38,7 @@ namespace ACFramework
 			Speed = cCritterBullet.BULLETSPEED;
             cSpriteSphere bulletsprite = new cSpriteSphere(cCritter.BULLETRADIUS, 6, 6);
             bulletsprite.FillColor = Color.Yellow;
-            Sprite = new cSpriteQuake(ModelsMD2.Squidge); /* Also sets cSprite._prismdz to cCritter._defaultprismdz, which we
+            Sprite = new cSpriteQuake(ModelsMD2.chicken); /* Also sets cSprite._prismdz to cCritter._defaultprismdz, which we
 			    set to CritterWall.BULLETPRISMDZ above. */
         }
 
