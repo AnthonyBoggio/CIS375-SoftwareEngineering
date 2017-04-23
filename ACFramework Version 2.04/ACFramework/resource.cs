@@ -350,19 +350,19 @@ namespace ACFramework
         // at least one must be set true
         /*Folder, file, offset, random select*/
         private static readonly ModelsMD2Info[] minfo = {
-            new ModelsMD2Info( "chicken", "Stoopid.pcx", 0.0f, true ),
-            new ModelsMD2Info( "hand", "BASE.pcx", 0.2f, true ),
-            new ModelsMD2Info( "jack", "desert.pcx", 0.1f, true ),
-            new ModelsMD2Info( "mog", "mog.pcx", 0.15f, true ),
-            new ModelsMD2Info( "mrfrost", "mrfrost.pcx", 0.3f, true ),
-            new ModelsMD2Info( "oluve", "gold beast.pcx", 0.2f, true ),
-            new ModelsMD2Info( "oluve", "green grin.pcx", 0.2f, true ),
-            new ModelsMD2Info( "oluve", "gray skull.pcx", 0.2f, true ),
-            new ModelsMD2Info( "oluve", "red amber.pcx", 0.2f, true ),
-            new ModelsMD2Info( "oluve", "silver cloud.pcx", 0.2f, true ),
-            new ModelsMD2Info( "oluve", "white crystal.pcx", 0.2f, true ),
-            new ModelsMD2Info( "penguin", "Penguin.pcx", 0.1f, true ),
-            new ModelsMD2Info( "potator", "ctf_b.pcx", 0.15f, true )
+            new ModelsMD2Info( "chicken", "Stoopid.pcx", 0.0f, false ),
+            new ModelsMD2Info( "hand", "BASE.pcx", 0.2f, false ),
+            new ModelsMD2Info( "jack", "desert.pcx", 0.1f, false ),
+            new ModelsMD2Info( "mog", "mog.pcx", 0.15f, false ),
+            new ModelsMD2Info( "mrfrost", "mrfrost.pcx", 0.3f, false ),
+            new ModelsMD2Info( "oluve", "gold beast.pcx", 0.2f, false ),
+            new ModelsMD2Info( "oluve", "green grin.pcx", 0.2f, false ),
+            new ModelsMD2Info( "oluve", "gray skull.pcx", 0.2f, false ),
+            new ModelsMD2Info( "oluve", "red amber.pcx", 0.2f, false ),
+            new ModelsMD2Info( "oluve", "silver cloud.pcx", 0.2f, false ),
+            new ModelsMD2Info( "oluve", "white crystal.pcx", 0.2f, false ),
+            new ModelsMD2Info( "penguin", "Penguin.pcx", 0.1f, false ),
+            new ModelsMD2Info( "potator", "ctf_b.pcx", 0.15f, false )
 
         };            
 
