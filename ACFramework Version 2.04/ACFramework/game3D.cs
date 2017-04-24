@@ -50,9 +50,10 @@ namespace ACFramework
             : base( pownergame ) 
 		{ 
 			BulletClass = new cHandgunBullet( );
-            Sprite = new cSpriteSphere(); 
-			Sprite.FillColor = Color.DarkGreen; 
-			Sprite.SpriteAttitude = cMatrix3.scale( 2, 0.8f, 0.4f ); 
+            //Sprite = new cSpriteSphere(); 
+            //Sprite.FillColor = Color.DarkGreen; 
+            Sprite = new cSpriteQuake(ModelsMD2.mog);
+            Sprite.SpriteAttitude = cMatrix3.scale( 2, 0.8f, 0.4f ); 
 			setRadius( cGame3D.PLAYERRADIUS ); //Default cCritter.PLAYERRADIUS is 0.4.  
 			setHealth( 10 ); 
 			moveTo( _movebox.LoCorner.add( new cVector3( 0.0f, 0.0f, 2.0f ))); 
@@ -178,7 +179,7 @@ namespace ACFramework
 			Density = 2.0f; 
 			MaxSpeed = 30.0f;
             if (pownergame != null) //Just to be safe.
-               Sprite = new cSpriteQuake(Framework.models.selectRandomCritter());
+               //Sprite = new cSpriteQuake(Framework.models.selectRandomCritter());
 
             Sprite = new cSpriteQuake(ModelsMD2.chicken); //////////////////////////
             Sprite = new cSpriteQuake(ModelsMD2.hand);
@@ -702,9 +703,9 @@ namespace ACFramework
             skeleton.copy(_border);
             setSkyBox(skeleton);
 
-            SkyBox.setAllSidesTexture(BitmapRes.bounceWall, 1); //wall bitmap
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.bounceWall); //floor bitmap
-            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.bounceWall); //ceiling bitmap
+            SkyBox.setAllSidesTexture(BitmapRes.stoneWall); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.grassFloor); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.cloudySky); //ceiling bitmap
 
             Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
 
