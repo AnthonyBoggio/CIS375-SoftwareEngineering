@@ -586,12 +586,13 @@ namespace ACFramework
             }
             //else don't draw SIMPLIFIED or FULL background, that is, draw nothing.
         }
-
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         public virtual void seedCritters()
         {
             cCritter newcritter;
-            _pbiota.purgeNonPlayerNonWallCritters(); /* Clean out all critters but player and
-	 		walls, in case you have walls. */
+            _pbiota.purgeNonPlayerNonWallCritters(); /* Clean out all critters but player and walls, in case you have walls. */
             for (int i = 0; i < _seedcount; i++)
             {
                 newcritter = new cCritter(this); /* The this argument adds the critter to the game,
@@ -607,6 +608,39 @@ namespace ACFramework
 	 			bother evading children of cCritterBullet. */
             }
         }
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        public virtual void seedCrittersStatic()
+        {
+            cCritter newcritter;
+            _pbiota.purgeNonPlayerNonWallCritters(); /* Clean out all critters but player and walls, in case you have walls. */
+            for (int i = 0; i < _seedcount; i++)
+            {
+                /* The this argument adds the critter to the game,
+				and sets its _movebox and _dragbox to the game _border, sets its _wrapflag
+				to match the game's _wrapflag. */
+                newcritter = new cCritter(this); 
+                
+                newcritter.randomize(cCritter.MF_POSITION | cCritter.MF_VELOCITY);
+                newcritter.Sprite = randomSprite(_spritetype);
+                newcritter.addForce(new cForceEvadeBullet()); 
+                /* Default force for evading the cBullet objects that the player fires. 
+                 * This force is a child of cForceClassEvade with default constructor equivalent 
+                 * to cForceClassEvade(cForceEvadeBullet.DARTACCELERATION, cForceEvadeBullet.DARTSPEEDUP,
+                 * RUNTIME_CLASS(cCritterBullet), FALSE). The FALSE in the fourth arg, means don't
+                 * bother evading children of cCritterBullet. */
+            }
+        }
+
+
+
+
+
+
 
         /// <summary>
         /// Does nothing, but can be overridden to set the _gameover flag, reseed the world, or 
