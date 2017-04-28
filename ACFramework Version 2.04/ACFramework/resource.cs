@@ -357,7 +357,7 @@ namespace ACFramework
             new ModelsMD2Info( "mrfrost", "mrfrost.pcx", 0.3f, false ),
             new ModelsMD2Info( "oluve", "gold beast.pcx", 0.2f, false ),
             new ModelsMD2Info( "oluve", "green grin.pcx", 0.2f, false ),
-            new ModelsMD2Info( "oluve", "gray skull.pcx", 0.2f, false ),
+            new ModelsMD2Info( "oluve", "grey skull.pcx", 0.2f, false ),
             new ModelsMD2Info( "oluve", "red amber.pcx", 0.2f, false ),
             new ModelsMD2Info( "oluve", "silver cloud.pcx", 0.2f, false ),
             new ModelsMD2Info( "oluve", "white crystal.pcx", 0.2f, false ),
@@ -411,8 +411,8 @@ namespace ACFramework
         }
         public int selectRandomOluve(int lower, int upper)
         {
-            int selection = Framework.randomOb.random(lower, upper+1);
-            return randomCritters[selection];
+            int selection = Framework.randomOb.random(lower, upper);
+            return selection;
         }
     }    
 }

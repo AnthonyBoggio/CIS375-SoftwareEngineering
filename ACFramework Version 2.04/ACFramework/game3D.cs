@@ -175,7 +175,7 @@ namespace ACFramework
             : base( pownergame ) 
 		{ 
 			addForce( new cForceGravity( 25.0f, new cVector3( 0.0f, -1, 0.00f ))); 
-			addForce( new cForceDrag( 20.0f ) );  // default friction strength 0.5 
+			//addForce( new cForceDrag( 20.0f ) );  // default friction strength 0.5 
 			Density = 2.0f; 
 			MaxSpeed = 30.0f;
             if (pownergame != null) //Just to be safe.
@@ -231,8 +231,11 @@ namespace ACFramework
 		public override void update( ACView pactiveview, float dt ) 
 		{ 
 			base.update( pactiveview, dt ); //Always call this first
-			if ( (_outcode & cRealBox3.BOX_HIZ) != 0 ) /* use bitwise AND to check if a flag is set. */ 
-				delete_me(); //tell the game to remove yourself if you fall up to the hiz.
+			
+            //**********************************************************************************
+            //Commented out so that collision with the HIZ does not make deletion
+            //if ( (_outcode & cRealBox3.BOX_HIZ) != 0 ) /* use bitwise AND to check if a flag is set. */ 
+			//	delete_me(); //tell the game to remove yourself if you fall up to the hiz.
         } 
 
 		// do a delete_me if you hit the left end 
@@ -380,11 +383,52 @@ namespace ACFramework
     {
         public cEnemyOluve(cGame pownergame) : base(pownergame)
         {
-           
+
             int ranOluveColor = Framework.models.selectRandomOluve(5, 10);
-            Sprite = new cSpriteQuake(ranOluveColor);
+
+            //determines which random oluve is chosen and is drawn, room will be filled with all random colored ones
+            if (ranOluveColor == 5)
+            {
+                Sprite = new cSpriteQuake(ModelsMD2.oluvegold);
+            }
+            else if (ranOluveColor == 6)
+            {
+                Sprite = new cSpriteQuake(ModelsMD2.oluvegray);
+            }
+            else if (ranOluveColor == 7)
+            {
+                Sprite = new cSpriteQuake(ModelsMD2.oluvegreen);
+            }
+            else if (ranOluveColor == 8)
+            {
+                Sprite = new cSpriteQuake(ModelsMD2.oluvered);
+            }
+            else if (ranOluveColor == 9)
+            {
+                Sprite = new cSpriteQuake(ModelsMD2.oluvesilver);
+            }
+            else if (ranOluveColor == 10)
+            {
+                Sprite = new cSpriteQuake(ModelsMD2.oluvewhite);
+            }
+
             Sprite.setstate(State.Other, 6, 37, StateType.Repeat); //turn
             //Sprite.setstate(State.Other, 94, 111, StateType.Repeat); //spin
+
+            Bounciness = 1.0f; //maximum bounciness
+
+            MaxSpeed = 30.0f; //max speed of the critters
+            //the higher the number the more bouncing will occur 
+
+            //randomizes starting position
+            randomizePosition(new cRealBox3(new cVector3(_movebox.Lox, _movebox.Loy, _movebox.Loz + 4.0f),
+                new cVector3(_movebox.Hix, _movebox.Loy, _movebox.Midz - 1.0f)));
+
+            //no friction for the bouncy balls so that they just keep moving
+            addForce(new cForceDrag(0.0f));  
+
+            //makes them bounce
+            _wrapflag = cCritter.BOUNCE;
         }
         public override bool IsKindOf(string str)
         {
@@ -645,6 +689,10 @@ namespace ACFramework
 
             Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
 
+            _seedcount = 30; //the more there are the more bounciness occurs
+
+            seedCritters(); //has to be called again so that the oluves are drawn
+
             wentThrough = true; //copy these 2 lines
             startNewRoom = Age;
 
@@ -729,8 +777,16 @@ namespace ACFramework
 		{
 			Biota.purgeCritters( "cCritterBullet" ); 
 			Biota.purgeCritters( "cCritter3Dcharacter" );
-            for (int i = 0; i < _seedcount; i++) 
-				new cCritter3Dcharacter( this );
+
+            if (roomNumber == 1)
+            {
+                for (int i = 0; i < _seedcount; i++)
+                    new cEnemyOluve(this);
+            }
+            if(roomNumber == 2)
+            {
+            }
+
             Player.moveTo(new cVector3(0.0f, Border.Loy, Border.Hiz - 3.0f)); 
 				/* We start at hiz and move towards	loz */ 
 		} 
@@ -788,12 +844,17 @@ namespace ACFramework
                 Framework.snd.play(Sound.Hallelujah);
                 return ; 
 			} 
+
+            //**************************************************************
+            //commented this out so that the critters do not come back, once they are gone, they are gone for good
+
 		// (2) Also don't let the the model count diminish.
 					//(need to recheck propcount in case we just called seedCritters).
-			int modelcount = Biota.count( "cCritter3Dcharacter" ); 
-			int modelstoadd = _seedcount - modelcount; 
-			for ( int i = 0; i < modelstoadd; i++) 
-				new cCritter3Dcharacter( this ); 
+			//int modelcount = Biota.count( "cCritter3Dcharacter" ); 
+			//int modelstoadd = _seedcount - modelcount; 
+			//for ( int i = 0; i < modelstoadd; i++) 
+			//	new cCritter3Dcharacter( this ); 
+
 		// (3) Maybe check some other conditions.
 
             if (wentThrough && (Age - startNewRoom) > 2.0f)
