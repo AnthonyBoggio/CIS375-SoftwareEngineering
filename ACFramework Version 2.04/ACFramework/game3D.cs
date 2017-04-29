@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ACFramework
 { 
-	
+
 	class cCritterDoor : cCritterWall 
 	{
 
@@ -303,7 +303,7 @@ namespace ACFramework
     
     class cEnemyHand : cCritter3Dcharacter
     {
-        public cEnemyHand(cGame pownergame, cVector3 vmoveTo) : base(pownergame)
+        public cEnemyHand(cGame pownergame) : base(pownergame)
         {
             
             Sprite = new cSpriteQuake(ModelsMD2.hand);
@@ -311,8 +311,31 @@ namespace ACFramework
             Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Gun
             //Sprite.setstate(State.Other, 72, 83, StateType.Repeat); //flip off
             //Sprite.setstate(State.Other, 112, 122, StateType.Repeat); //wave
-            moveTo(vmoveTo);
             randomizeVelocity(0, 0, false);
+
+            int positionCount = 0;
+            cVector3[] positions = new cVector3[10]; //to store the positions of the hand guns
+
+
+            if (positionCount == 0)
+            {
+                positions[0] = new cVector3(-20, -1, -50);
+                positions[1] = new cVector3(-10, -1, -50);
+                positions[2] = new cVector3(0, 10, 5);
+                positions[3] = new cVector3(10, 15, 10);
+                positions[4] = new cVector3(20, 20, 15);
+                positions[5] = new cVector3(30, 25, 20);
+                positions[6] = new cVector3(40, 26, 25);
+                positions[7] = new cVector3(50, 30, 30);
+                positions[8] = new cVector3(60, 35, 35);
+                positions[9] = new cVector3(70, 40, 40);
+            }
+
+            moveTo(positions[positionCount]);
+
+            positionCount++;
+
+            addForce(new cForceDrag(20.0f));
         }
         public override bool IsKindOf(string str)
         {
@@ -571,7 +594,6 @@ namespace ACFramework
         private bool wentThrough = false;
         private float startNewRoom;
         private int roomNumber = 0; //Tracks the room we are in 
-        
 
 		public cGame3D() 
 		{
@@ -727,6 +749,9 @@ namespace ACFramework
 
             Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
 
+            _seedcount = 10;
+            seedCritters();
+
             wentThrough = true; //copy these 2 lines
             startNewRoom = Age;
 
@@ -785,6 +810,8 @@ namespace ACFramework
             }
             if(roomNumber == 2)
             {
+                for (int i = 0; i < _seedcount; i++)
+                    new cEnemyHand(this);
             }
 
             Player.moveTo(new cVector3(0.0f, Border.Loy, Border.Hiz - 3.0f)); 
