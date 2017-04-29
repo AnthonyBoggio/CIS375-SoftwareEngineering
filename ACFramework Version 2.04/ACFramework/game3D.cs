@@ -231,6 +231,7 @@ namespace ACFramework
 		public override void update( ACView pactiveview, float dt ) 
 		{ 
 			base.update( pactiveview, dt ); //Always call this first
+            rotateAttitude(Tangent.rotationAngle(AttitudeTangent));
 			
             //**********************************************************************************
             //Commented out so that collision with the HIZ does not make deletion
@@ -413,32 +414,38 @@ namespace ACFramework
             if (ranOluveColor == 5)
             {
                 Sprite = new cSpriteQuake(ModelsMD2.oluvegold);
+                setRadius(0.8f);
             }
             else if (ranOluveColor == 6)
             {
                 Sprite = new cSpriteQuake(ModelsMD2.oluvegray);
+                setRadius(0.8f);
             }
             else if (ranOluveColor == 7)
             {
                 Sprite = new cSpriteQuake(ModelsMD2.oluvegreen);
+                setRadius(0.8f);
             }
             else if (ranOluveColor == 8)
             {
                 Sprite = new cSpriteQuake(ModelsMD2.oluvered);
+                setRadius(0.8f);
             }
             else if (ranOluveColor == 9)
             {
                 Sprite = new cSpriteQuake(ModelsMD2.oluvesilver);
+                setRadius(0.8f);
             }
             else if (ranOluveColor == 10)
             {
                 Sprite = new cSpriteQuake(ModelsMD2.oluvewhite);
+                setRadius(0.8f);
             }
 
             Sprite.setstate(State.Other, 6, 37, StateType.Repeat); //turn
             //Sprite.setstate(State.Other, 94, 111, StateType.Repeat); //spin
 
-            Bounciness = 1.0f; //maximum bounciness
+            Bounciness = 2.0f; //maximum bounciness
 
             MaxSpeed = 30.0f; //max speed of the critters
             //the higher the number the more bouncing will occur 
@@ -619,40 +626,7 @@ namespace ACFramework
 			setPlayer( new cCritter3DPlayer( this ));
             cEnemyJack mrFrost1 = new cEnemyJack(this, new cVector3(_border.Hix/2, _border.Hiy / 2, _border.Hiz / 2));
             
-            //_ptreasure = new cCritterTreasure( this ); //dont need this at the moment
-
-            // In this world the x and y go left and up respectively, while z comes out of the screen.
-            //A wall views its "thickness" as in the y direction, which is up here, and its "height" as in the z direction, which is into the screen.  
-            //First draw a wall with dy height resting on the bottom of the world.
-            /*
-            float zpos = 0.0f; // Point on the z axis where we set down the wall.  0 would be center, halfway down the hall, but we can offset it if we like. 
-			float height = 0.1f * _border.YSize; 
-			float ycenter = -_border.YRadius + height / 2.0f; 
-			float wallthickness = cGame3D.WALLTHICKNESS;
-            cCritterWall pwall = new cCritterWall( 
-				new cVector3( _border.Midx + 2.0f, ycenter, zpos ), 
-				new cVector3( _border.Hix, ycenter, zpos ), 
-				height, //thickness param for wall's dy which goes perpendicular to the 
-					//baseline established by the frist two args, up the screen 
-				wallthickness, //height argument for this wall's dz  goes into the screen 
-				this );
-			cSpriteTextureBox pspritebox = new cSpriteTextureBox( pwall.Skeleton, BitmapRes.fireWall, 1); //Sets all sides
-				// We'll tile our sprites three times along the long sides, and on the short ends, we'll only tile them once, so we reset these two. 
-          pwall.Sprite = pspritebox; 
-		
-		
-			//Then draw a ramp to the top of the wall.  Scoot it over against the right wall.
-			float planckwidth = 0.75f * height; 
-			pwall = new cCritterWall( 
-				new cVector3( _border.Hix -planckwidth / 2.0f, _border.Loy, _border.Hiz - 2.0f), 
-				new cVector3( _border.Hix - planckwidth / 2.0f, _border.Loy + height, zpos ), 
-				planckwidth,     //thickness param for wall's dy which is perpenedicualr to the baseline, 
-						        //which goes into the screen, so thickness goes to the right 
-				wallthickness, //_border.zradius(),  //height argument for wall's dz which goes into the screen 
-				this );
-            cSpriteTextureBox stb = new cSpriteTextureBox(pwall.Skeleton, BitmapRes.grassFloor, 1);
-            pwall.Sprite = stb;
-		*/
+           
 			cCritterDoor pdwall = new cCritterDoor( 
 				new cVector3( _border.Lox, _border.Loy, _border.Midz ), 
 				new cVector3( _border.Lox, _border.Midy - 3, _border.Midz ), 
@@ -661,39 +635,8 @@ namespace ACFramework
 			cSpriteTextureBox pspritedoor = new cSpriteTextureBox( pdwall.Skeleton, BitmapRes.Door, 1); 
 			pdwall.Sprite = pspritedoor;
         }
-
-        /*public void setRoom1( )
-        {
-            Biota.purgeCritters("cCritterWall");
-            Biota.purgeCritters("cCritter3Dcharacter");
-            setBorder(10.0f, 15.0f, 10.0f); 
-	        cRealBox3 skeleton = new cRealBox3();
-            skeleton.copy( _border );
-	        setSkyBox(skeleton);
-	        SkyBox.setAllSidesTexture( BitmapRes.fireWall, 2 );
-	        SkyBox.setSideTexture( cRealBox3.LOY, BitmapRes.fireWall );
-	        SkyBox.setSideSolidColor( cRealBox3.HIY, Color.Blue );
-	        _seedcount = 0;
-	        Player.setMoveBox( new cRealBox3( 10.0f, 15.0f, 10.0f ) );
-            float zpos = 0.0f; // Point on the z axis where we set down the wall.  0 would be center,
-			//halfway down the hall, but we can offset it if we like. 
-            float height = 0.1f * _border.YSize;
-            float ycenter = -_border.YRadius + height / 2.0f;
-            float wallthickness = cGame3D.WALLTHICKNESS;
-            cCritterWall pwall = new cCritterWall(
-                new cVector3(_border.Midx + 2.0f, ycenter, zpos),
-                new cVector3(_border.Hix, ycenter, zpos),
-                height, //thickness param for wall's dy which goes perpendicular to the 
-                //baseline established by the frist two args, up the screen 
-                wallthickness, //height argument for this wall's dz  goes into the screen 
-                this);
-            cSpriteTextureBox pspritebox = new cSpriteTextureBox(pwall.Skeleton, BitmapRes.cloudySky, 1); //last number sets tiles
-            pwall.Sprite = pspritebox;
-            wentThrough = true;
-            startNewRoom = Age;
-        }*/
-
-        /*******************************************************************************************************************************************************************/
+        
+       
         public void setBouncyBallRoom()
         {
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
@@ -809,6 +752,43 @@ namespace ACFramework
                                                          8, this);
             cSpriteTextureBox pspritebox3map = new cSpriteTextureBox(pwall3map.Skeleton, BitmapRes.map);
             pwall3map.Sprite = pspritebox3map;
+
+            //all of this following code is to create the door and the location of the door
+            //already have the door set to be directly across on the other side
+            //change x values for positions on walls
+            //change y valuse to change the way the door is fixed on that particular wall
+            cCritterDoor pdwall = new cCritterDoor(
+                new cVector3(_border.Hix, _border.Loy, _border.Midz),
+                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
+                0.1f, 2, this);
+            cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
+                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
+            pdwall.Sprite = pspritedoor;
+        }
+
+        public void setWinRoom()
+        {
+            Biota.purgeCritters("cCritterWall"); //copy these 2 lines
+            Biota.purgeCritters("cCritter3Dcharacter");
+
+            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
+
+            cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
+            skeleton.copy(_border);
+            setSkyBox(skeleton);
+
+            SkyBox.setAllSidesTexture(BitmapRes.bounceWall, 1); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.bounceWall); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.bounceWall); //ceiling bitmap
+
+            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
+
+            _seedcount = 1; 
+
+            seedCritters(); 
+
+            wentThrough = true; //copy these 2 lines
+            startNewRoom = Age;
 
             //all of this following code is to create the door and the location of the door
             //already have the door set to be directly across on the other side
