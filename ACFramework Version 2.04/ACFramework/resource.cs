@@ -37,7 +37,9 @@ namespace ACFramework
         public static readonly int fireWall = 9; //handgun room
         public static readonly int metalFloor = 10; //handgun room
         public static readonly int blackCeiling = 11; //handgun room
-        
+        public static readonly int map = 12; 
+
+
 
         private static readonly string[] Bitmap = new string[] {
 
@@ -52,7 +54,8 @@ namespace ACFramework
                 "bounceBallWall.bmp",
                 "firewall.bmp",
                 "metal1.bmp",
-                "blackCeiling.bmp"
+                "blackCeiling.bmp",
+                "map.bmp"
             };
 
         public BitmapRes()

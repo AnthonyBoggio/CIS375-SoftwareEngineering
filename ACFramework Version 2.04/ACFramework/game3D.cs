@@ -785,6 +785,31 @@ namespace ACFramework
             wentThrough = true; //copy these 2 lines
             startNewRoom = Age;
 
+            float height = _border.YSize / 10;
+            float ycenter = -_border.YRadius + height / 2;
+            float wallthickness = cGame3D.WALLTHICKNESS;
+            cCritterWall pwall1 = new cCritterWall(new cVector3(_border.Lox, ycenter, _border.Loz + 30),
+                                                  new cVector3(_border.Hix, ycenter, _border.Loz + 30),
+                                                  height * 10,
+                                                  wallthickness,
+                                                  this);
+            cSpriteTextureBox pspritebox = new cSpriteTextureBox(pwall1.Skeleton, BitmapRes.stoneWall);
+            pwall1.Sprite = pspritebox;
+            cCritterWall pwall2 = new cCritterWall(new cVector3(_border.Lox, ycenter, _border.Loz + 20),
+                                                  new cVector3(_border.Hix, ycenter, _border.Loz + 20),
+                                                  height * 10,
+                                                  wallthickness,
+                                                  this);
+            cSpriteTextureBox pspritebox2 = new cSpriteTextureBox(pwall2.Skeleton, BitmapRes.stoneWall);
+            pwall2.Sprite = pspritebox2;
+
+            cCritterWall pwall3map = new cCritterWall(new cVector3(_border.Lox, _border.Loy, _border.Midz),
+                                                      new cVector3(_border.Lox, _border.Midy, _border.Midz),
+                                                         0.1f,
+                                                         8, this);
+            cSpriteTextureBox pspritebox3map = new cSpriteTextureBox(pwall3map.Skeleton, BitmapRes.map);
+            pwall3map.Sprite = pspritebox3map;
+
             //all of this following code is to create the door and the location of the door
             //already have the door set to be directly across on the other side
             //change x values for positions on walls
