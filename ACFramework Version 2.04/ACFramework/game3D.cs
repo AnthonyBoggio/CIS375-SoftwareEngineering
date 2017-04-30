@@ -308,6 +308,7 @@ namespace ACFramework
         {
             
             Sprite = new cSpriteQuake(ModelsMD2.hand);
+            setRadius(1.8f);
             //Sprite.setstate(State.Other, 0, 37, StateType.Repeat); //tapping
             Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Gun
             //Sprite.setstate(State.Other, 72, 83, StateType.Repeat); //flip off
@@ -320,16 +321,16 @@ namespace ACFramework
 
             if (positionCount == 0)
             {
-                positions[0] = new cVector3(-20, -1, -50);
-                positions[1] = new cVector3(-10, -1, -50);
-                positions[2] = new cVector3(0, 10, 5);
-                positions[3] = new cVector3(10, 15, 10);
-                positions[4] = new cVector3(20, 20, 15);
-                positions[5] = new cVector3(30, 25, 20);
-                positions[6] = new cVector3(40, 26, 25);
-                positions[7] = new cVector3(50, 30, 30);
-                positions[8] = new cVector3(60, 35, 35);
-                positions[9] = new cVector3(70, 40, 40);
+                positions[0] = new cVector3(1, 1, 0);
+                positions[1] = new cVector3(1, 1, 2);
+                positions[2] = new cVector3(1, 1, 4);
+                positions[3] = new cVector3(1, 1, 6);
+                positions[4] = new cVector3(1, 1, 8);
+                positions[5] = new cVector3(1, 1, 10);
+                positions[6] = new cVector3(1, 1, 12);
+                positions[7] = new cVector3(1, 1, 14);
+                positions[8] = new cVector3(1, 1, 16);
+                positions[9] = new cVector3(1, 1, 18);
             }
 
             moveTo(positions[positionCount]);
@@ -700,8 +701,8 @@ namespace ACFramework
 
             //all of this following code is to create the door and the location of the door
             cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Lox, _border.Loy, _border.Midz),
-                new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
+                new cVector3(_border.Midx, _border.Midy - 3, _border.Hiz),
+                new cVector3(_border.Midx, _border.Loy, _border.Hiz),                
                 0.1f, 2, this);
             cSpriteTextureBox pspritedoor = //change this variable name to determine collisions with ths specific door
                 new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door, 1);//last number sets tiles
