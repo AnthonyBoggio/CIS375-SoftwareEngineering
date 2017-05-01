@@ -302,7 +302,7 @@ namespace ACFramework
     }
 
     
-    class cEnemyHand : cCritter3Dcharacter
+    class cEnemyHand : cCritterArmed
     {
         public cEnemyHand(cGame pownergame) : base(pownergame)
         {
@@ -315,29 +315,46 @@ namespace ACFramework
             //Sprite.setstate(State.Other, 112, 122, StateType.Repeat); //wave
             randomizeVelocity(0, 0, false);
 
+            BulletClass = new cHandgunBullet(); //the hand will shoot chickens
+            Armed = true; //so that the hand is armed with the "gun"
+            _bshooting = true; //when true, the hand will constantly shoot
+            _aimtoattitudelock = true; //supposed to aim somewhat towards a target
+            WaitShoot = 5;//how long it waits between every shot
+
             int positionCount = 0;
             cVector3[] positions = new cVector3[10]; //to store the positions of the hand guns
 
 
             if (positionCount == 0)
             {
-                positions[0] = new cVector3(1, 1, 0);
-                positions[1] = new cVector3(1, 1, 2);
-                positions[2] = new cVector3(1, 1, 4);
-                positions[3] = new cVector3(1, 1, 6);
-                positions[4] = new cVector3(1, 1, 8);
-                positions[5] = new cVector3(1, 1, 10);
-                positions[6] = new cVector3(1, 1, 12);
-                positions[7] = new cVector3(1, 1, 14);
-                positions[8] = new cVector3(1, 1, 16);
-                positions[9] = new cVector3(1, 1, 18);
+                //positions[0] = new cVector3(1, 1, 0);
+                //positions[1] = new cVector3(1, 1, 2);
+                //positions[2] = new cVector3(1, 1, 4);
+                //positions[3] = new cVector3(1, 1, 6);
+                //positions[4] = new cVector3(1, 1, 8);
+                //positions[5] = new cVector3(1, 1, 10);
+                //positions[6] = new cVector3(1, 1, 12);
+                //positions[7] = new cVector3(1, 1, 14);
+                //positions[8] = new cVector3(1, 1, 16);
+                //positions[9] = new cVector3(1, 1, 18);
+
+                positions[0] = new cVector3(-10, -20, -20);
+                positions[1] = new cVector3(-10, -1, -50);
+                positions[2] = new cVector3(0, 10, 5);
+                positions[3] = new cVector3(10, 15, 10);
+                positions[4] = new cVector3(20, 20, 15);
+                positions[5] = new cVector3(30, 25, 20);
+                positions[6] = new cVector3(40, 26, 25);
+                positions[7] = new cVector3(50, 30, 30);
+                positions[8] = new cVector3(60, 35, 35);
+                positions[9] = new cVector3(70, 40, 40);
             }
 
             moveTo(positions[positionCount]);
 
             positionCount++;
 
-            addForce(new cForceDrag(20.0f));
+            addForce(new cForceDrag(20.0f));   
         }
         public override bool IsKindOf(string str)
         {
