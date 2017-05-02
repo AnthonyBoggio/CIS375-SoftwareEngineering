@@ -274,7 +274,7 @@ namespace ACFramework
         {
             base.initialize(pshooter);
             Sprite = new cSpriteQuake(ModelsMD2.chicken);
-            setRadius(0.2f);
+            setRadius(1.0f);
         }
         public override bool collide(cCritter pcritter)
         {
@@ -308,7 +308,7 @@ namespace ACFramework
         {
             
             Sprite = new cSpriteQuake(ModelsMD2.hand);
-            setRadius(1.8f);
+            setRadius(2.0f);
             //Sprite.setstate(State.Other, 0, 37, StateType.Repeat); //tapping
             Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Gun
             //Sprite.setstate(State.Other, 72, 83, StateType.Repeat); //flip off
@@ -318,27 +318,28 @@ namespace ACFramework
             BulletClass = new cHandgunBullet(); //the hand will shoot chickens
             Armed = true; //so that the hand is armed with the "gun"
             _bshooting = true; //when true, the hand will constantly shoot
-            _aimtoattitudelock = true; //supposed to aim somewhat towards a target
+            //_aimtoattitudelock = true; //supposed to aim somewhat towards a target
             WaitShoot = 5;//how long it waits between every shot
 
             int positionCount = 0;
             cVector3[] positions = new cVector3[10]; //to store the positions of the hand guns
+            Attitude = new cMatrix3(new cVector3(0.0f, 0.0f, 1.0f), new cVector3(1.0f, 0.0f, 0.0f), new cVector3(0.0f, 1.0f, 0.0f), Position);
 
 
-            if (positionCount == 0)
-            {
-                //positions[0] = new cVector3(1, 1, 0);
-                //positions[1] = new cVector3(1, 1, 2);
-                //positions[2] = new cVector3(1, 1, 4);
-                //positions[3] = new cVector3(1, 1, 6);
-                //positions[4] = new cVector3(1, 1, 8);
-                //positions[5] = new cVector3(1, 1, 10);
-                //positions[6] = new cVector3(1, 1, 12);
-                //positions[7] = new cVector3(1, 1, 14);
-                //positions[8] = new cVector3(1, 1, 16);
-                //positions[9] = new cVector3(1, 1, 18);
+            //if (positionCount == 0)
+            //{
+                positions[0] = new cVector3(-5, 1, 0);
+                positions[1] = new cVector3(1, 1, 2);
+                positions[2] = new cVector3(1, 1, 4);
+                positions[3] = new cVector3(1, 1, 6);
+                positions[4] = new cVector3(1, 1, 8);
+                positions[5] = new cVector3(1, 1, 10);
+                positions[6] = new cVector3(1, 1, 12);
+                positions[7] = new cVector3(1, 1, 14);
+                positions[8] = new cVector3(1, 1, 16);
+                positions[9] = new cVector3(1, 1, 18);
 
-                positions[0] = new cVector3(-10, -20, -20);
+                /*positions[0] = new cVector3(-10, -20, -20);
                 positions[1] = new cVector3(-10, -1, -50);
                 positions[2] = new cVector3(0, 10, 5);
                 positions[3] = new cVector3(10, 15, 10);
@@ -347,14 +348,18 @@ namespace ACFramework
                 positions[6] = new cVector3(40, 26, 25);
                 positions[7] = new cVector3(50, 30, 30);
                 positions[8] = new cVector3(60, 35, 35);
-                positions[9] = new cVector3(70, 40, 40);
-            }
+                positions[9] = new cVector3(70, 40, 40);*/
+            //}
 
             moveTo(positions[positionCount]);
 
             positionCount++;
 
             addForce(new cForceDrag(20.0f));   
+        }
+        public override void die()
+        {           
+           
         }
         public override bool IsKindOf(string str)
         {
@@ -500,6 +505,7 @@ namespace ACFramework
             
             Sprite = new cSpriteQuake(ModelsMD2.penguin);
             Sprite.setstate(State.Other, 135, 172, StateType.Repeat); //sliding
+            Framework.snd.play(Sound.Penguin1);
         }
         public override bool IsKindOf(string str)
         {
@@ -789,17 +795,17 @@ namespace ACFramework
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
             Biota.purgeCritters("cCritter3Dcharacter");
 
-            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
+            setBorder(20.0f, 15.0f, 20.0f); //the dimensions of the room (room length, ceiling height, room width)
 
             cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
             skeleton.copy(_border);
             setSkyBox(skeleton);
 
-            SkyBox.setAllSidesTexture(BitmapRes.bounceWall, 1); //wall bitmap
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.bounceWall); //floor bitmap
-            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.bounceWall); //ceiling bitmap
+            SkyBox.setAllSidesTexture(BitmapRes.blackCeiling, 1); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.blackCeiling); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.blackCeiling); //ceiling bitmap
 
-            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
+            Player.setMoveBox(new cRealBox3(20.0f, 15.0f, 20.0f)); //make the same as the border of the room
 
             _seedcount = 1; 
 
@@ -807,19 +813,33 @@ namespace ACFramework
 
             wentThrough = true; //copy these 2 lines
             startNewRoom = Age;
-
-            //all of this following code is to create the door and the location of the door
-            //already have the door set to be directly across on the other side
-            //change x values for positions on walls
-            //change y valuse to change the way the door is fixed on that particular wall
-            cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Hix, _border.Loy, _border.Midz),
-                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
-                0.1f, 2, this);
-            cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
-                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
-            pdwall.Sprite = pspritedoor;
         }
+
+        public void setLoseRoom()
+        {
+            Biota.purgeCritters("cCritterWall"); //copy these 2 lines
+            Biota.purgeCritters("cCritter3Dcharacter");
+
+            setBorder(20.0f, 15.0f, 20.0f); //the dimensions of the room (room length, ceiling height, room width)
+
+            cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
+            skeleton.copy(_border);
+            setSkyBox(skeleton);
+
+            SkyBox.setAllSidesTexture(BitmapRes.blackCeiling, 1); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.blackCeiling); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.blackCeiling); //ceiling bitmap
+
+            Player.setMoveBox(new cRealBox3(20.0f, 15.0f, 20.0f)); //make the same as the border of the room
+
+            _seedcount = 1;
+
+            seedCritters();
+            Framework.snd.play(Sound.Laugh);
+            wentThrough = true; //copy these 2 lines
+            startNewRoom = Age;
+        }
+
 
         public override void seedCritters()
 		{
@@ -928,6 +948,10 @@ namespace ACFramework
                 {
                     roomNumber = 3;
                     setMazeRoom();
+                }
+                else if (roomNumber == 3)
+                {
+                    setWinRoom();
                 }
                 doorcollision = false;                
             }
