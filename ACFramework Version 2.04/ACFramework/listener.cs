@@ -345,14 +345,20 @@ namespace ACFramework
             bool pageup = Framework.Keydev[vk.PageUp];
             bool pagedown = Framework.Keydev[vk.PageDown];
             if (!_hopping && up)
+            {
                 pcritter.Velocity = pcritter.AttitudeTangent.mult(pcritter.MaxSpeed);
+                pcritter.Sprite.ModelState = State.Run;
+            }
             if (!_hopping && down)
             {
                 pcritter.Velocity = pcritter.AttitudeTangent.mult(-pcritter.MaxSpeed);
                 inreverse = true;
             }
             if (!up && !down)
+            {
                 pcritter.Velocity = new cVector3(0.0f, 0.0f, 0.0f);
+                pcritter.Sprite.ModelState = State.Idle;
+            }
 
             //Now restore the y velocity.
             pcritter.Velocity = new cVector3(pcritter.Velocity.X, yvelocity, pcritter.Velocity.Z);
