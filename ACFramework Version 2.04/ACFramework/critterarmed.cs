@@ -884,6 +884,7 @@ namespace ACFramework
 		public static readonly int DAMAGESOUND = Sound.Pop; 
 		public static readonly new float DENSITY = 5.0f;
         public static readonly float WAITSHOT = 0.5f;
+        public static bool _loseRoom = false;
 		protected bool _sensitive; /* If TRUE, then you are damaged by a collision with 
 			a cEnemyCritter */
         protected bool shotDone = true;

@@ -47,9 +47,8 @@ namespace ACFramework
         //private bool warningGiven = false; //not needed at the moment
 		
         public cCritter3DPlayer( cGame pownergame ) 
-            : base( pownergame ) 
-		{ 
-			BulletClass = new cHandgunBullet( );
+            : base( pownergame )
+        {
             //Sprite = new cSpriteSphere(); 
             //Sprite.FillColor = Color.DarkGreen; 
             Sprite = new cSpriteQuake(ModelsMD2.mog);
@@ -58,7 +57,7 @@ namespace ACFramework
 			setHealth( 10 ); 
 			moveTo( _movebox.LoCorner.add( new cVector3( 0.0f, 0.0f, 2.0f ))); 
 			WrapFlag = cCritter.CLAMP; //Use CLAMP so you stop dead at edges.
-			Armed = true; //Let's use bullets.
+			Armed = false; //bullets turned off
 			MaxSpeed =  cGame3D.MAXPLAYERSPEED; 
 			AbsorberFlag = true; //Keeps player from being buffeted about.
 			ListenerAcceleration = 160.0f; //So Hopper can overcome gravity.  Only affects hop.
@@ -106,9 +105,8 @@ namespace ACFramework
 				addScore( 10 ); 
 			} 
 			else 
-			{ 
-				damage( 1 );
-                Framework.snd.play(Sound.Crunch); 
+			{
+                _loseRoom = true; //sets to true so that if collideing it goes to the lose room
 			} 
 			pcritter.die(); 
 			return true; 
@@ -402,14 +400,15 @@ namespace ACFramework
 
     class cEnemyMrFrost : cCritter3Dcharacter 
     {
-        public cEnemyMrFrost(cGame pownergame, cVector3 vmoveTo) : base(pownergame)
+        public cEnemyMrFrost(cGame pownergame) : base(pownergame)
         {
           
             Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
             Sprite.setstate(State.Other, 0, 11, StateType.Repeat); //idle
-            //Sprite.setstate(State.Other, 84, 94, StateType.Repeat); //pipe
-            moveTo(vmoveTo);
-            randomizeVelocity(0, 0, false);
+                                                                   //Sprite.setstate(State.Other, 84, 94, StateType.Repeat); //pipe
+            randomizePosition(new cRealBox3(new cVector3(_movebox.Lox, _movebox.Loy, _movebox.Loz + 4.0f), new cVector3(_movebox.Hix, _movebox.Loy, _movebox.Hiz - 4.0f)));
+            addForce(new cForceDrag(10.0f)); //so that the snowmen do not move
+
         }
         public override bool IsKindOf(string str)
         {
@@ -505,7 +504,15 @@ namespace ACFramework
             
             Sprite = new cSpriteQuake(ModelsMD2.penguin);
             Sprite.setstate(State.Other, 135, 172, StateType.Repeat); //sliding
+
             Framework.snd.play(Sound.Penguin1);
+
+            Speed = 30.0f;
+            Bounciness = 0.5f;
+            _wrapflag = cCritter.BOUNCE;
+            addForce(new cForceDrag(0.0f)); 
+
+        
         }
         public override bool IsKindOf(string str)
         {
@@ -645,10 +652,10 @@ namespace ACFramework
             SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.iceFloor ); //floor
 			SkyBox.setSideTexture( cRealBox3.HIY, BitmapRes.cloudySky ); //ceiling
 		
-			WrapFlag = cCritter.BOUNCE; 
-			_seedcount = 0; 
+			WrapFlag = cCritter.BOUNCE;
+			_seedcount = 20; 
 			setPlayer( new cCritter3DPlayer( this ));
-            cEnemyJack mrFrost1 = new cEnemyJack(this, new cVector3(_border.Hix/2, _border.Hiy / 2, _border.Hiz / 2));
+            cEnemyJack mrFrost1 = new cEnemyJack(this, new cVector3(_border.Hix, _border.Hiy, _border.Hiz));
             
            
 			cCritterDoor pdwall = new cCritterDoor( 
@@ -841,11 +848,19 @@ namespace ACFramework
         }
 
 
+        
         public override void seedCritters()
 		{
 			Biota.purgeCritters( "cCritterBullet" ); 
 			Biota.purgeCritters( "cCritter3Dcharacter" );
 
+            if(roomNumber == 0)
+            {
+                for (int i = 0; i < _seedcount; i++)
+                    new cEnemyPenquin(this);
+                for (int i = 0; i < _seedcount/2; i++)
+                    new cEnemyMrFrost(this);
+            }
             if (roomNumber == 1)
             {
                 for (int i = 0; i < _seedcount; i++)
@@ -954,6 +969,12 @@ namespace ACFramework
                     setWinRoom();
                 }
                 doorcollision = false;                
+            }
+
+            if(cCritterPlayer._loseRoom == true)
+            {
+                setLoseRoom();
+                cCritterPlayer._loseRoom = false;
             }
 		}
 		

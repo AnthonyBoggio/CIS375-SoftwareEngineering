@@ -368,7 +368,7 @@ namespace ACFramework
             new ModelsMD2Info( "chicken", "Stoopid.pcx", 0.0f, false ),
             new ModelsMD2Info( "hand", "BASE.pcx", 0.2f, false ),
             new ModelsMD2Info( "jack", "desert.pcx", 0.1f, false ),
-            new ModelsMD2Info( "mog", "mog.pcx", 0.15f, false ),
+            new ModelsMD2Info( "mog", "mog.pcx", 0.3f, false ),
             new ModelsMD2Info( "mrfrost", "mrfrost.pcx", 0.3f, false ),
             new ModelsMD2Info( "oluve", "gold beast.pcx", 0.2f, false ),
             new ModelsMD2Info( "oluve", "green grin.pcx", 0.2f, false ),
