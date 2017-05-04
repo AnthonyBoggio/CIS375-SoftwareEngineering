@@ -63,13 +63,14 @@ namespace ACFramework
 			ListenerAcceleration = 160.0f; //So Hopper can overcome gravity.  Only affects hop.
 		
             // YHopper hop strength 12.0
-			Listener = new cListenerScooterYHopper( 0.2f, 12.0f ); 
+			Listener = new cListenerScooterYHopper( 0.2f, 12.0f );
+
             // the two arguments are walkspeed and hop strength -- JC
             
             addForce( new cForceGravity( 50.0f )); /* Uses  gravity. Default strength is 25.0.	Gravity	will affect player using cListenerHopper. */ 
 			AttitudeToMotionLock = false; //It looks nicer is you don't turn the player with motion.
-			Attitude = new cMatrix3( new cVector3(0.0f, 0.0f, -1.0f), new cVector3( -1.0f, 0.0f, 0.0f ), new cVector3( 0.0f, 1.0f, 0.0f ), Position); 
-		}
+			Attitude = new cMatrix3( new cVector3(0.0f, 0.0f, -1.0f), new cVector3( -1.0f, 0.0f, 0.0f ), new cVector3( 0.0f, 1.0f, 0.0f ), Position);
+        }
 
         public override void update(ACView pactiveview, float dt)
         {
@@ -106,7 +107,16 @@ namespace ACFramework
 			} 
 			else 
 			{
-                _loseRoom = true; //sets to true so that if collideing it goes to the lose room
+                bool childsMode = Framework.Keydev[vk.C]; //checks to see if c is pressed
+
+                if (childsMode)
+                {
+                    //nothing happens, just makes sure if you collide nothing happens, CHILDS MODE
+                }
+                else
+                {
+                    _loseRoom = true; //sets to true so that if collideing it goes to the lose room
+                }
 			} 
 			pcritter.die(); 
 			return true; 
@@ -235,11 +245,11 @@ namespace ACFramework
             //Commented out so that collision with the HIZ does not make deletion
             //if ( (_outcode & cRealBox3.BOX_HIZ) != 0 ) /* use bitwise AND to check if a flag is set. */ 
 			//	delete_me(); //tell the game to remove yourself if you fall up to the hiz.
-        } 
+        }
 
-		// do a delete_me if you hit the left end 
-	
-		public override void die() 
+        // do a delete_me if you hit the left end 
+
+        public override void die() 
 		{ 
 			Player.addScore( Value ); 
 			base.die(); 
@@ -510,9 +520,9 @@ namespace ACFramework
             Speed = 30.0f;
             Bounciness = 0.5f;
             _wrapflag = cCritter.BOUNCE;
-            addForce(new cForceDrag(0.0f)); 
+            addForce(new cForceDrag(0.0f));
 
-        
+            
         }
         public override bool IsKindOf(string str)
         {
@@ -731,7 +741,7 @@ namespace ACFramework
 
             //all of this following code is to create the door and the location of the door
             cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Midx, _border.Midy - 3, _border.Hiz),
+                new cVector3(_border.Midx, _border.Midy-3, _border.Hiz),
                 new cVector3(_border.Midx, _border.Loy, _border.Hiz),                
                 0.1f, 2, this);
             cSpriteTextureBox pspritedoor = //change this variable name to determine collisions with ths specific door
@@ -755,6 +765,8 @@ namespace ACFramework
             SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.cloudySky); //ceiling bitmap
 
             Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
+
+            _seedcount = 0;
 
             wentThrough = true; //copy these 2 lines
             startNewRoom = Age;

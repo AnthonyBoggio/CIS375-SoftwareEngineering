@@ -133,7 +133,6 @@ C:\Users\store0972\Documents\GitHub\ACFramework Version 2.04\ACFramework\obj\Deb
 C:\Users\store0972\Documents\GitHub\ACFramework Version 2.04\ACFramework\obj\Debug\ACFramework.pdb
 C:\Users\store0972\Documents\GitHub\ACFramework Version 2.04\ACFramework\bin\Debug\ACFramework.exe
 C:\Users\store0972\Documents\GitHub\ACFramework Version 2.04\ACFramework\bin\Debug\ACFramework.pdb
-C:\Users\store0972\Documents\GitHub\ACFramework Version 2.04\ACFramework\bin\Debug\OpenTK.dll.config
 C:\Users\Liz\Documents\CIS375-SoftwareEngineering\ACFramework Version 2.04\ACFramework\obj\Debug\ACFramework.csprojResolveAssemblyReference.cache
 C:\Users\Liz\Documents\CIS375-SoftwareEngineering\ACFramework Version 2.04\ACFramework\obj\Debug\ACFramework.Properties.Resources.resources
 C:\Users\Liz\Documents\CIS375-SoftwareEngineering\ACFramework Version 2.04\ACFramework\obj\Debug\ACFramework.csproj.GenerateResource.Cache

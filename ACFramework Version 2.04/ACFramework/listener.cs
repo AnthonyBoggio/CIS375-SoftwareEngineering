@@ -344,6 +344,22 @@ namespace ACFramework
             bool down = Framework.Keydev[vk.Down];
             bool pageup = Framework.Keydev[vk.PageUp];
             bool pagedown = Framework.Keydev[vk.PageDown];
+            bool C = Framework.Keydev[vk.C];
+            bool Space = Framework.Keydev[vk.Space];
+
+            if(C) //will be used to create childs mode
+            {
+                pcritter.Shield = true;
+            }
+
+            if (Space)
+            {
+                Framework.snd.play(Sound.Scream); //when space is hit, the player screams.  for some reason
+                //cant turn left when holding in space, up, and left at the same time.  Must let go of one of the buttons
+                pcritter.MaxSpeed = 100; //this is very fast
+            }
+            else pcritter.MaxSpeed = 20;
+
             if (!_hopping && up)
             {
                 pcritter.Velocity = pcritter.AttitudeTangent.mult(pcritter.MaxSpeed);

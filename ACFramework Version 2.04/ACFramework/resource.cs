@@ -283,12 +283,14 @@ namespace ACFramework
         public static readonly int U = 15;
         public static readonly int I = 16;
         public static readonly int D = 17;
+        public static readonly int PrintScreen = 18;
+        public static readonly int C = 19;
 
         public static Key[] key;
 
         public vk()
         {
-            key = new Key[] { Key.ControlLeft, 
+            key = new Key[] { Key.ControlLeft,
                 Key.ControlRight,
                 Key.ShiftLeft,
                 Key.ShiftRight,
@@ -305,7 +307,9 @@ namespace ACFramework
                 Key.Delete,
                 Key.U,
                 Key.I,
-                Key.D
+                Key.D,
+                Key.PrintScreen,
+                Key.C
             };
 
         }
