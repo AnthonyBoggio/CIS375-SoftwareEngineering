@@ -1,0 +1,56 @@
+Game Name: Fuction : a syntaxtic nightmare
+
+_____________________Controls_______________________
+Arrow Keys - Move
+Space - Run and Scream
+Hold C - Childs mode
+
+_____________________REQUIREMENTS_______________________
+
+At least 3 distinct rooms with doorways between rooms (the “doorways” can be some type of portal or teleportation device)
+	Penguin Hell - first room
+	Bouncy Ball Hell - second room
+  	Easy/Complicate Maze - third room
+  	Win Room - fourth room
+  	Lose Room - Die room
+4 Districts walls
+  	Snow Walls - First room
+  	Ice floor  - First room
+  	Colorful bubbles - Second room
+  	Stone - Third room
+  	Grass - Third room
+  	Fire - Forth room
+3 different models
+  	Penguin
+  	Mr Frost
+  	Hand
+  	Potator
+5 states for models
+  	Potator - Shows Picture
+  	Potator - laughs
+  	Hand - shoots
+  	Oluva - Eye rotate
+  	Penguins - Sliding
+  	Snowman - idle
+At least one moving wall
+  	The small wall behind the hand slide downward 
+  	We had no use for a moving wall so it’s just pretty
+  	At least one bullet
+  	Finger bullet - chicken
+At least one extra key
+  	Space - screams and runs (turn down volume)
+  	C - Childs mode
+3 Bit maps
+  	Bouncy walls
+  	Maze map - Liz made the map
+  	Snow wall
+3 Sounds
+  	Penguin At beginning
+  	Run - Screaming
+ 	Death - Laughing 
+One special collide
+	Collide with potator ends game
+	Chicken bullet doesn't kill you - just scares toward door
+Win and Lose
+	Win - Potator shows you picture
+	Lose - hit by anything

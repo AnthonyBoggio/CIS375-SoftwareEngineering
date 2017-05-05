@@ -38,23 +38,71 @@ namespace ACFramework
                 return "cCritterDoor";
             }
         }
-	} 
-	
-	//==============Critters for the cGame3D: Player, Ball, Treasure ================ 
-	
-	class cCritter3DPlayer : cCritterArmedPlayer 
-	{ 
+	}
+
+    class cCritterWallMover : cCritterWall
+    {
+        private bool moveFlag;
+        private cVector3 moveAxisAndDirection;
+
+        private static cVector3 defaultMoveAxis = new cVector3(0f, -.05f, 0f); // Default Is Verdical Down
+
+        public cCritterWallMover(cVector3 enda, cVector3 endb, float thickness, float height, cGame pownergame)
+            : base(enda, endb, thickness, height, pownergame)
+        {
+            this.moveFlag = true;
+            this.moveAxisAndDirection = defaultMoveAxis;
+        }
+
+        public cCritterWallMover(cVector3 enda, cVector3 endb, float thickness, float height, cGame pownergame, cVector3 moveAxisAndDirection)
+            : base(enda, endb, thickness, height, pownergame)
+        {
+            this.moveFlag = true;
+            this.moveAxisAndDirection = moveAxisAndDirection;
+        }
+
+        public override void update(ACView pactiveview, float dt)
+        {
+            base.update(pactiveview, dt);
+            if (moveFlag)
+            {
+                this.moveTo(this.Position.add(this.moveAxisAndDirection), false);
+            }
+        }
+
+        public override bool IsKindOf(string str)
+        {
+            return str == "cCritterWallMover" || base.IsKindOf(str);
+        }
+
+        public override string RuntimeClass
+        {
+            get
+            {
+                return "cCritterWallMover";
+            }
+        }
+
+    }
+
+
+    //==============Critters for the cGame3D: Player, Ball, Treasure ================ 
+
+    class cCritter3DPlayer : cCritterArmedPlayer 
+	{
         //private bool warningGiven = false; //not needed at the moment
-		
+        cGame game;
+        
         public cCritter3DPlayer( cGame pownergame ) 
             : base( pownergame )
         {
+            game = pownergame;
             //Sprite = new cSpriteSphere(); 
             //Sprite.FillColor = Color.DarkGreen; 
             Sprite = new cSpriteQuake(ModelsMD2.mog);
             Sprite.SpriteAttitude = cMatrix3.scale( 2, 0.8f, 0.4f ); 
 			setRadius( cGame3D.PLAYERRADIUS ); //Default cCritter.PLAYERRADIUS is 0.4.  
-			setHealth( 10 ); 
+			
 			moveTo( _movebox.LoCorner.add( new cVector3( 0.0f, 0.0f, 2.0f ))); 
 			WrapFlag = cCritter.CLAMP; //Use CLAMP so you stop dead at edges.
 			Armed = false; //bullets turned off
@@ -74,50 +122,36 @@ namespace ACFramework
 
         public override void update(ACView pactiveview, float dt)
         {
-            base.update(pactiveview, dt); //Always call this first
-
-
-            //if (!warningGiven && distanceTo(new cVector3(Game.Border.Lox, Game.Border.Loy,
-            //    Game.Border.Midz)) < 3.0f)
-            //{
-            //    warningGiven = false; //changed to false so that you just go through the door without warning
-            //}
- 
+            base.update(pactiveview, dt); //Always call this first 
         } 
 
         public override bool collide( cCritter pcritter ) 
 		{ 
 			bool playerhigherthancritter = Position.Y - Radius > pcritter.Position.Y; 
-		/* If you are "higher" than the pcritter, as in jumping on it, you get a point
-	and the critter dies.  If you are lower than it, you lose health and the
-	critter also dies. To be higher, let's say your low point has to higher
-	than the critter's center. We compute playerhigherthancritter before the collide,
-	as collide can change the positions. */
+		
             _baseAccessControl = 1;
 			bool collided = base.collide( pcritter );
             _baseAccessControl = 0;
             if (!collided) 
 				return false;
-		/* If you're here, you collided.  We'll treat all the guys the same -- the collision
-	 with a Treasure is different, but we let the Treasure contol that collision. */ 
-			if ( playerhigherthancritter ) 
-			{
-                Framework.snd.play(Sound.Goopy); 
-				addScore( 10 ); 
-			} 
-			else 
-			{
-                bool childsMode = Framework.Keydev[vk.C]; //checks to see if c is pressed
+            /* If you're here, you collided.  We'll treat all the guys the same -- the collision
+            with a Treasure is different, but we let the Treasure contol that collision. */
+            
+            bool childsMode = Framework.Keydev[vk.C]; //checks to see if c is pressed
 
-                if (childsMode)
-                {
-                    //nothing happens, just makes sure if you collide nothing happens, CHILDS MODE
-                }
-                else
-                {
-                    _loseRoom = true; //sets to true so that if collideing it goes to the lose room
-                }
-			} 
+            if (childsMode)
+            {
+                //nothing happens, just makes sure if you collide nothing happens, CHILDS MODE
+            }
+            else if (pcritter.IsKindOf("cEnemyPotator"))
+            {
+                game.GameOver = true;
+            }
+            else
+            {
+                _loseRoom = true; //sets to true so that if collideing it goes to the lose room
+            }
+			 
 			pcritter.die(); 
 			return true; 
 		}
@@ -189,10 +223,10 @@ namespace ACFramework
             if (pownergame != null) //Just to be safe.
                //Sprite = new cSpriteQuake(Framework.models.selectRandomCritter());
 
-            Sprite = new cSpriteQuake(ModelsMD2.chicken); //////////////////////////
+            Sprite = new cSpriteQuake(ModelsMD2.chicken);
             Sprite = new cSpriteQuake(ModelsMD2.hand);
             Sprite = new cSpriteQuake(ModelsMD2.jack);
-            Sprite = new cSpriteQuake(ModelsMD2.mog);//player character
+            Sprite = new cSpriteQuake(ModelsMD2.mog); //player character
             Sprite = new cSpriteQuake(ModelsMD2.mrfrost);
             Sprite = new cSpriteQuake(ModelsMD2.oluvegold);
             Sprite = new cSpriteQuake(ModelsMD2.oluvegray);
@@ -251,7 +285,7 @@ namespace ACFramework
 
         public override void die() 
 		{ 
-			Player.addScore( Value ); 
+			//Player.addScore( Value ); 
 			base.die(); 
 		} 
 
@@ -276,23 +310,23 @@ namespace ACFramework
         public override cCritterBullet Create()
         // has to be a Create function for every type of bullet -- JC
         {
+
             return new cHandgunBullet();
         }
         public override void initialize(cCritterArmed pshooter)
         {
             base.initialize(pshooter);
             Sprite = new cSpriteQuake(ModelsMD2.chicken);
-            setRadius(1.0f);
+            setRadius(.5f);
         }
         public override bool collide(cCritter pcritter)
         {
             bool success = base.collide(pcritter);
-            if (success && pcritter.IsKindOf("cCritter3DPlayer"))
+            if (success && pcritter.IsKindOf("cEnemyHand"))
             {
-               ((cGame3D)Game).SeedCount = 1;
-
-               ((cGame3D)Game).seedCritters();
+                return false;
             }
+            
             return success;
         }
         public override bool IsKindOf(string str)
@@ -316,52 +350,29 @@ namespace ACFramework
         {
             
             Sprite = new cSpriteQuake(ModelsMD2.hand);
-            setRadius(2.0f);
-            //Sprite.setstate(State.Other, 0, 37, StateType.Repeat); //tapping
+            setRadius(1.0f);            
             Sprite.setstate(State.Other, 46, 53, StateType.Repeat); //Gun
-            //Sprite.setstate(State.Other, 72, 83, StateType.Repeat); //flip off
-            //Sprite.setstate(State.Other, 112, 122, StateType.Repeat); //wave
+            
             randomizeVelocity(0, 0, false);
 
+            addForce(new cForceObjectSeek(Player, 5f));
             BulletClass = new cHandgunBullet(); //the hand will shoot chickens
             Armed = true; //so that the hand is armed with the "gun"
             _bshooting = true; //when true, the hand will constantly shoot
             //_aimtoattitudelock = true; //supposed to aim somewhat towards a target
-            WaitShoot = 5;//how long it waits between every shot
+            WaitShoot = 1;//how long it waits between every shot
+           
 
             int positionCount = 0;
-            cVector3[] positions = new cVector3[10]; //to store the positions of the hand guns
+            cVector3[] positions = new cVector3[1]; //to store the positions of the hand guns
             Attitude = new cMatrix3(new cVector3(0.0f, 0.0f, 1.0f), new cVector3(1.0f, 0.0f, 0.0f), new cVector3(0.0f, 1.0f, 0.0f), Position);
-
-
-            //if (positionCount == 0)
-            //{
-                positions[0] = new cVector3(-5, 1, 0);
-                positions[1] = new cVector3(1, 1, 2);
-                positions[2] = new cVector3(1, 1, 4);
-                positions[3] = new cVector3(1, 1, 6);
-                positions[4] = new cVector3(1, 1, 8);
-                positions[5] = new cVector3(1, 1, 10);
-                positions[6] = new cVector3(1, 1, 12);
-                positions[7] = new cVector3(1, 1, 14);
-                positions[8] = new cVector3(1, 1, 16);
-                positions[9] = new cVector3(1, 1, 18);
-
-                /*positions[0] = new cVector3(-10, -20, -20);
-                positions[1] = new cVector3(-10, -1, -50);
-                positions[2] = new cVector3(0, 10, 5);
-                positions[3] = new cVector3(10, 15, 10);
-                positions[4] = new cVector3(20, 20, 15);
-                positions[5] = new cVector3(30, 25, 20);
-                positions[6] = new cVector3(40, 26, 25);
-                positions[7] = new cVector3(50, 30, 30);
-                positions[8] = new cVector3(60, 35, 35);
-                positions[9] = new cVector3(70, 40, 40);*/
-            //}
+                      
+            positions[0] = new cVector3(-8, -5, 0);
+                
 
             moveTo(positions[positionCount]);
 
-            positionCount++;
+            //positionCount++;
 
             addForce(new cForceDrag(20.0f));   
         }
@@ -541,13 +552,26 @@ namespace ACFramework
     /*add more states?*/
     class cEnemyPotator : cCritter3Dcharacter
     {
-        public cEnemyPotator(cGame pownergame) : base(pownergame)
+        
+        public cEnemyPotator(cGame pownergame) : base(pownergame) 
         {
             
-            Sprite = new cSpriteQuake(ModelsMD2.penguin);
-            Sprite.setstate(State.Other, 3, 27, StateType.Repeat); //picture
+            Sprite = new cSpriteQuake(ModelsMD2.potator);
+            //Sprite.setstate(State.Other, 3, 27, StateType.Repeat); //picture
             //Sprite.setstate(State.Other, 45, 50, StateType.Repeat); //laughing
+            randomizeVelocity(0, 0, false);
+            addForce(new cForceDrag(20.0f));
+
+            setRadius(1.5f);
+
+            int positionCount = 0;
+            cVector3[] positions = new cVector3[1]; //to store the positions of the hand guns
+            Attitude = new cMatrix3(new cVector3(0.0f, 0.0f, 1.0f), new cVector3(1.0f, 0.0f, 0.0f), new cVector3(0.0f, 1.0f, 0.0f), Position);
+            positions[0] = new cVector3(0, -8, 0);
+            moveTo(positions[positionCount]);
         }
+ 
+       
         public override bool IsKindOf(string str)
         {
             return str == "cEnemyPotator" || base.IsKindOf(str);
@@ -562,86 +586,34 @@ namespace ACFramework
         }
     }
 
-    
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    class cCritterTreasure : cCritter
-	{   // Try jumping through this hoop
-		public cCritterTreasure( cGame pownergame ) : 
-		base( pownergame ) 
-		{ 
-			/* The sprites look nice from afar, but bitmap speed is really slow
-		when you get close to them, so don't use this. */
-        cPolygon ppoly = new cPolygon( 24 );
-			ppoly.Filled = false; 
-			ppoly.LineWidthWeight = 0.5f;
-			Sprite = ppoly; 
-			_collidepriority = cCollider.CP_PLAYER + 1; /* Let this guy call collide on the
-			player, as his method is overloaded in a special way. */ 
-			rotate( new cSpin( (float) Math.PI / 2.0f, new cVector3(0.0f, 0.0f, 1.0f) )); /* Trial and error shows this
-			rotation works to make it face the z diretion. */
-        setRadius( cGame3D.TREASURERADIUS );
-			FixedFlag = true; 
-			moveTo( new cVector3( _movebox.Midx, _movebox.Midy - 2.0f, 
-				_movebox.Loz - 1.5f * cGame3D.TREASURERADIUS )); 
-		} 
-
-		public override bool collide( cCritter pcritter ) 
-		{ 
-			if ( contains( pcritter )) //disk of pcritter is wholly inside my disk 
-			{
-                Framework.snd.play(Sound.Clap); 
-				pcritter.addScore( 100 ); 
-				pcritter.addHealth( 1 ); 
-				pcritter.moveTo( new cVector3( _movebox.Midx, _movebox.Loy + 1.0f,
-                    _movebox.Hiz - 3.0f )); 
-				return true; 
-			} 
-			else 
-				return false; 
-		} 
-
-		//Checks if pcritter inside.
-	
-		public override int collidesWith( cCritter pothercritter ) 
-		{ 
-			if ( pothercritter.IsKindOf( "cCritter3DPlayer" )) 
-				return cCollider.COLLIDEASCALLER; 
-			else 
-				return cCollider.DONTCOLLIDE; 
-		} 
-
-		/* Only collide
-			with cCritter3DPlayer. */ 
-
-       public override bool IsKindOf( string str )
+    class cEnemyPotatorWin : cEnemyPotator
+    {
+        public cEnemyPotatorWin(cGame pownergame) : base(pownergame)
         {
-            return str == "cCritterTreasure" || base.IsKindOf( str );
+            Sprite.setstate(State.Other, 3, 27, StateType.Repeat); //picture
         }
-	
-        public override string RuntimeClass
+    }
+    class cEnemyPotatorLose : cEnemyPotator
+    {
+        public cEnemyPotatorLose(cGame pownergame) : base(pownergame)
         {
-            get
-            {
-                return "cCritterTreasure";
-            }
+            Sprite.setstate(State.Other, 45, 50, StateType.Repeat); //laughing
         }
-	} 
-	
+    }
+ 	
 	//======================cGame3D========================== 
 	
 	class cGame3D : cGame 
 	{ 
-		public static readonly float TREASURERADIUS = 1.2f; 
 		public static readonly float WALLTHICKNESS = 0.5f; 
 		public static readonly float PLAYERRADIUS = 0.2f; 
 		public static readonly float MAXPLAYERSPEED = 25.0f;
-		//private cCritterTreasure _ptreasure; //Currently not in use0
 		private bool doorcollision;
         private bool wentThrough = false;
         private float startNewRoom;
         private int roomNumber = 0; //Tracks the room we are in 
+
+        //------------Rooms----------
 
 		public cGame3D() 
 		{
@@ -676,8 +648,7 @@ namespace ACFramework
 			cSpriteTextureBox pspritedoor = new cSpriteTextureBox( pdwall.Skeleton, BitmapRes.Door, 1); 
 			pdwall.Sprite = pspritedoor;
         }
-        
-       
+             
         public void setBouncyBallRoom()
         {
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
@@ -707,22 +678,21 @@ namespace ACFramework
             //change x values for positions on walls
             //change y valuse to change the way the door is fixed on that particular wall
             cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Hix, _border.Loy, _border.Midz),
-                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
+                new cVector3(_border.Lox, _border.Loy, _border.Midz),
+                new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
                 0.1f, 2, this);
             cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
                 new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
             pdwall.Sprite = pspritedoor;
         }
 
-        //Creates the room which has the hand guns that shoot the chickens
         public void setHandgunRoom()
         {
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
             Biota.purgeCritters("cCritter3Dcharacter");
-
-            setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
-
+             
+            setBorder(30.0f, 15.0f, 10.0f); //the dimensions of the room (room length, ceiling height, room width)
+            
             cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
             skeleton.copy(_border);
             setSkyBox(skeleton);
@@ -731,21 +701,37 @@ namespace ACFramework
             SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.metalFloor); //floor bitmap
             SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.metalFloor); //ceiling bitmap
 
-            Player.setMoveBox(new cRealBox3(50.0f, 15.0f, 50.0f)); //make the same as the border of the room
+            Player.setMoveBox(new cRealBox3(30.0f, 15.0f, 10.0f)); //make the same as the border of the room
+            
 
-            _seedcount = 10;
+
+            _seedcount = 1;
             seedCritters();
 
             wentThrough = true; //copy these 2 lines
             startNewRoom = Age;
 
+            float height = _border.YSize;
+            float ycenter = -_border.YRadius + height / 2;
+            float wallthickness = cGame3D.WALLTHICKNESS;
+
+            cCritterWallMover pwall;
+            pwall = new cCritterWallMover(new cVector3(_border.Lox +.2f,  ycenter, _border.Midz),
+                                          new cVector3(_border.Lox +.2f, ycenter, _border.Midz),
+                                          height, wallthickness, this);
+            cSpriteTextureBox pspritebox;
+            pspritebox = new cSpriteTextureBox(pwall.Skeleton, BitmapRes.blackCeiling, 1);
+            pwall.Sprite = pspritebox;
+
+            Player.moveTo(new cVector3(14, -8, 0));
+
             //all of this following code is to create the door and the location of the door
             cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Midx, _border.Midy-3, _border.Hiz),
-                new cVector3(_border.Midx, _border.Loy, _border.Hiz),                
+                new cVector3(_border.Hix, _border.Loy, _border.Midz),
+                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
                 0.1f, 2, this);
-            cSpriteTextureBox pspritedoor = //change this variable name to determine collisions with ths specific door
-                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door, 1);//last number sets tiles
+            cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
+                new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
             pdwall.Sprite = pspritedoor;
         }
 
@@ -753,6 +739,10 @@ namespace ACFramework
         {
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
             Biota.purgeCritters("cCritter3Dcharacter");
+            Biota.purgeNonPlayerCritters();
+
+            Player.moveTo(new cVector3(_border.Hix, _border.Loy, _border.Midz));
+            
 
             setBorder(50.0f, 15.0f, 50.0f); //the dimensions of the room (room length, ceiling height, room width)
 
@@ -789,8 +779,8 @@ namespace ACFramework
             cSpriteTextureBox pspritebox2 = new cSpriteTextureBox(pwall2.Skeleton, BitmapRes.stoneWall);
             pwall2.Sprite = pspritebox2;
 
-            cCritterWall pwall3map = new cCritterWall(new cVector3(_border.Lox, _border.Loy, _border.Midz),
-                                                      new cVector3(_border.Lox, _border.Midy, _border.Midz),
+            cCritterWall pwall3map = new cCritterWall(new cVector3(_border.Hix, _border.Loy, _border.Midz),
+                                                      new cVector3(_border.Hix, _border.Midy, _border.Midz),
                                                          0.1f,
                                                          8, this);
             cSpriteTextureBox pspritebox3map = new cSpriteTextureBox(pwall3map.Skeleton, BitmapRes.map);
@@ -801,8 +791,8 @@ namespace ACFramework
             //change x values for positions on walls
             //change y valuse to change the way the door is fixed on that particular wall
             cCritterDoor pdwall = new cCritterDoor(
-                new cVector3(_border.Hix, _border.Loy, _border.Midz),
-                new cVector3(_border.Hix, _border.Midy - 3, _border.Midz),
+                new cVector3(_border.Lox, _border.Loy, _border.Midz),
+                new cVector3(_border.Lox, _border.Midy - 3, _border.Midz),
                 0.1f, 2, this);
             cSpriteTextureBox pspritedoor = // change this variable name to detemrine collisions with this specific door
                 new cSpriteTextureBox(pdwall.Skeleton, BitmapRes.Door);
@@ -814,17 +804,17 @@ namespace ACFramework
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
             Biota.purgeCritters("cCritter3Dcharacter");
 
-            setBorder(20.0f, 15.0f, 20.0f); //the dimensions of the room (room length, ceiling height, room width)
+            setBorder(15.0f, 15.0f, 15.0f); //the dimensions of the room (room length, ceiling height, room width)
 
             cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
             skeleton.copy(_border);
             setSkyBox(skeleton);
 
-            SkyBox.setAllSidesTexture(BitmapRes.blackCeiling, 1); //wall bitmap
-            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.blackCeiling); //floor bitmap
-            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.blackCeiling); //ceiling bitmap
+            SkyBox.setAllSidesTexture(BitmapRes.cloudySky, 1); //wall bitmap
+            SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.cloudySky); //floor bitmap
+            SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.cloudySky); //ceiling bitmap
 
-            Player.setMoveBox(new cRealBox3(20.0f, 15.0f, 20.0f)); //make the same as the border of the room
+            Player.setMoveBox(new cRealBox3(15.0f, 15.0f, 15.0f)); //make the same as the border of the room
 
             _seedcount = 1; 
 
@@ -839,7 +829,7 @@ namespace ACFramework
             Biota.purgeCritters("cCritterWall"); //copy these 2 lines
             Biota.purgeCritters("cCritter3Dcharacter");
 
-            setBorder(20.0f, 15.0f, 20.0f); //the dimensions of the room (room length, ceiling height, room width)
+            setBorder(15.0f, 15.0f, 15.0f); //the dimensions of the room (room length, ceiling height, room width)
 
             cRealBox3 skeleton = new cRealBox3(); //just copy these 3 lines
             skeleton.copy(_border);
@@ -849,7 +839,7 @@ namespace ACFramework
             SkyBox.setSideTexture(cRealBox3.LOY, BitmapRes.blackCeiling); //floor bitmap
             SkyBox.setSideTexture(cRealBox3.HIY, BitmapRes.blackCeiling); //ceiling bitmap
 
-            Player.setMoveBox(new cRealBox3(20.0f, 15.0f, 20.0f)); //make the same as the border of the room
+            Player.setMoveBox(new cRealBox3(15.0f, 15.0f, 15.0f)); //make the same as the border of the room
 
             _seedcount = 1;
 
@@ -860,7 +850,7 @@ namespace ACFramework
         }
 
 
-        
+        //------------- End of rooms -----------
         public override void seedCritters()
 		{
 			Biota.purgeCritters( "cCritterBullet" ); 
@@ -883,12 +873,21 @@ namespace ACFramework
                 for (int i = 0; i < _seedcount; i++)
                     new cEnemyHand(this);
             }
+            if (roomNumber == 3)
+            {
+                for (int i = 0; i < _seedcount; i++)
+                    new cEnemyPotatorWin(this);
+            }
+            if(roomNumber == 4)
+            {
+                for (int i = 0; i < _seedcount; i++)
+                    new cEnemyPotatorLose(this);
+            }
 
             Player.moveTo(new cVector3(0.0f, Border.Loy, Border.Hiz - 3.0f)); 
 				/* We start at hiz and move towards	loz */ 
 		} 
 
-		
 		public void setdoorcollision( ) { doorcollision = true; } 
 		
 		public override ACView View 
@@ -904,7 +903,6 @@ namespace ACFramework
             }
 		} 
 
-		
 		public override cCritterViewer Viewpoint 
 		{ 
             set
@@ -929,12 +927,12 @@ namespace ACFramework
             }
 		} 
 
-		/* Move over to be above the lower left corner where the player is.  In 3D, use a low viewpoint low looking up. */ 
+	
 	
 		public override void adjustGameParameters() 
 		{
 		// (1) End the game if the player is dead 
-			if ( (Health == 0) && !_gameover ) //Player's been killed and game's not over.
+			/**if ( (Health == 0) && !_gameover ) //Player's been killed and game's not over.
 			{ 
 				_gameover = true; 
 				Player.addScore( _scorecorrection ); // So user can reach _maxscore  
@@ -942,7 +940,10 @@ namespace ACFramework
                 return ; 
 			} 
 
-            //**************************************************************
+
+            //game doesn't end on it's own
+
+            
             //commented this out so that the critters do not come back, once they are gone, they are gone for good
 
 		// (2) Also don't let the the model count diminish.
@@ -952,7 +953,7 @@ namespace ACFramework
 			//for ( int i = 0; i < modelstoadd; i++) 
 			//	new cCritter3Dcharacter( this ); 
 
-		// (3) Maybe check some other conditions.
+		// (3) Maybe check some other conditions.*/
 
             if (wentThrough && (Age - startNewRoom) > 2.0f)
             {
@@ -985,6 +986,7 @@ namespace ACFramework
 
             if(cCritterPlayer._loseRoom == true)
             {
+                roomNumber = 4;
                 setLoseRoom();
                 cCritterPlayer._loseRoom = false;
             }

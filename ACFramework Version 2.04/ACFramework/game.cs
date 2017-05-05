@@ -622,13 +622,10 @@ namespace ACFramework
         public virtual string statusMessage()
         {
             string cStrStatusMessage;
-            string cStrHealth;
-            string cStrScore;
+            
 
-            cStrScore = "Score: " + Score.ToString();
-            cStrHealth = "Health: " + Health.ToString();
-            cStrStatusMessage = "AC Framework       " + cStrScore + "   " + cStrHealth + "    " + addOn;
-            return cStrStatusMessage;
+            
+            return "FUCTION : Child's mode: C";
         }
 
         public virtual int WorldShape
@@ -872,7 +869,7 @@ namespace ACFramework
         {
             get
             {
-                return "Your Score Was " + Score.ToString();
+                return "Well That Was Weird";
             }
         }
 
